@@ -3,323 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClauNet</title>
+<title>ClauNet — Soporte técnico y desarrollo web</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #ffffff;
-    --bg2: #f7f7f5;
-    --border: #e8e8e8;
-    --text: #111;
-    --muted: #999;
-    --accent: #1a6fff;
-    --accent2: #3d85ff;
+  :root { --bg:#ffffff; --bg2:#f7f7f5; --border:#e8e8e8; --text:#111; --muted:#999; --accent:#1a6fff; --accent2:#3d85ff; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-weight:300; min-height:100vh; overflow-x:hidden; }
+  nav { display:flex; justify-content:space-between; align-items:center; padding:1.2rem 3rem; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:100; }
+  .logo-svg { height:64px; width:auto; }
+  nav ul { list-style:none; display:flex; gap:2rem; }
+  nav ul a { color:var(--muted); text-decoration:none; font-size:0.9rem; transition:color 0.2s; }
+  nav ul a:hover { color:var(--text); }
+  .hero { max-width:820px; margin:0 auto; padding:9rem 3rem 7rem; animation:fadeUp 0.6s ease both; }
+  .badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--bg2); border:1px solid var(--border); border-radius:100px; padding:0.35rem 0.9rem; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); margin-bottom:2.5rem; }
+  .badge::before { content:''; width:6px; height:6px; border-radius:50%; background:#22c55e; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  h1 { font-size:clamp(2.8rem,6vw,4.5rem); font-weight:300; line-height:1.1; letter-spacing:-0.03em; margin-bottom:1.5rem; }
+  h1 em { font-style:normal; color:var(--accent); }
+  .subtitle { font-size:1.1rem; color:var(--muted); line-height:1.7; max-width:520px; margin-bottom:3rem; }
+  .cta-group { display:flex; gap:1rem; flex-wrap:wrap; }
+  .btn { padding:0.75rem 1.75rem; border-radius:8px; font-size:0.9rem; font-family:'DM Sans',sans-serif; font-weight:400; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; }
+  .btn-whatsapp { background:#25d366; color:#fff; border:none; }
+  .btn-whatsapp:hover { background:#1ebe5d; transform:translateY(-1px); }
+  .btn-secondary { background:transparent; color:var(--text); border:1px solid var(--border); }
+  .btn-secondary:hover { border-color:#bbb; }
+  .btn-accent { background:var(--accent); color:#fff; border:none; }
+  .btn-accent:hover { background:var(--accent2); transform:translateY(-1px); }
+  .divider { border:none; border-top:1px solid var(--border); margin:0 3rem; }
+  section.services, section.contact { max-width:820px; margin:0 auto; animation:fadeUp 0.6s ease both; }
+  .services { padding:7rem 3rem; animation-delay:0.1s; }
+  .contact { padding:6rem 3rem 9rem; animation-delay:0.2s; }
+  .section-label { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:3rem; }
+  .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+  .card { background:var(--bg); border:1px solid var(--border); border-radius:14px; padding:2.5rem; transition:transform 0.2s,box-shadow 0.2s; color:var(--text); }
+  .card:hover { transform:translateY(-5px); box-shadow:0 16px 40px rgba(0,0,0,0.08); }
+  .card-icon { font-size:1.8rem; margin-bottom:1.1rem; display:block; }
+  .card h3 { font-size:1rem; font-weight:400; margin-bottom:0.5rem; }
+  .card p { font-size:0.85rem; color:var(--muted); line-height:1.6; }
+  .trabajos-cta { margin-top:2.5rem; display:flex; justify-content:flex-end; }
+  .contact-box { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:3rem; display:flex; justify-content:space-between; align-items:center; gap:2rem; flex-wrap:wrap; }
+  .contact-box h2 { font-size:1.6rem; font-weight:300; letter-spacing:-0.02em; }
+  .contact-box p { color:var(--muted); font-size:0.9rem; margin-top:0.4rem; }
+  footer { border-top:1px solid var(--border); padding:1.5rem 3rem; display:flex; justify-content:space-between; align-items:center; }
+  footer span { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @media(max-width:768px){
+    nav{padding:1rem 2rem} nav ul{gap:1.2rem}
+    .hero{padding:5rem 2rem 4rem}
+    .services,.contact{padding-left:2rem;padding-right:2rem}
+    .divider{margin:0 2rem} footer{padding:1.5rem 2rem}
   }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.2rem 3rem;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 100;
-  }
-
-  .logo-svg { height: 48px; width: auto; }
-
-  nav ul { list-style: none; display: flex; gap: 2rem; }
-  nav ul a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
-  nav ul a:hover { color: var(--text); }
-
-  .hero {
-    max-width: 820px;
-    margin: 0 auto;
-    padding: 9rem 3rem 7rem;
-    animation: fadeUp 0.6s ease both;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 0.35rem 0.9rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-bottom: 2.5rem;
-  }
-
-  .badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #22c55e;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-  h1 {
-    font-size: clamp(2.8rem, 6vw, 4.5rem);
-    font-weight: 300;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
-  }
-
-  h1 em { font-style: normal; color: var(--accent); }
-
-  .subtitle {
-    font-size: 1.1rem;
-    color: var(--muted);
-    line-height: 1.7;
-    max-width: 520px;
-    margin-bottom: 3rem;
-  }
-
-  .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-  .btn {
-    padding: 0.75rem 1.75rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 400;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .btn-whatsapp { background: #25d366; color: #fff; border: none; }
-  .btn-whatsapp:hover { background: #1ebe5d; transform: translateY(-1px); }
-  .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
-  .btn-secondary:hover { border-color: #bbb; }
-
-  .divider { border: none; border-top: 1px solid var(--border); margin: 0 3rem; }
-
-  section.services, section.portfolio, section.contact {
-    max-width: 820px;
-    margin: 0 auto;
-    animation: fadeUp 0.6s ease both;
-  }
-
-  .services { padding: 7rem 3rem; animation-delay: 0.1s; }
-  .portfolio { padding: 7rem 3rem; animation-delay: 0.15s; }
-  .contact { padding: 6rem 3rem 9rem; animation-delay: 0.2s; }
-
-  .section-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 3rem;
-  }
-
-  /* SERVICE CARDS */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  .card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 2.5rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-    color: var(--text);
-  }
-
-  .card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
-  .card-icon { font-size: 1.8rem; margin-bottom: 1.1rem; display: block; }
-  .card h3 { font-size: 1rem; font-weight: 400; margin-bottom: 0.5rem; color: var(--text); }
-  .card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-
-  /* PORTFOLIO */
-  .portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .project {
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-    text-decoration: none;
-    color: var(--text);
-    display: block;
-  }
-
-  .project:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-  }
-
-  .project-preview {
-    width: 100%;
-    height: 160px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-    position: relative;
-  }
-
-  .project-preview iframe {
-    width: 200%;
-    height: 200%;
-    transform: scale(0.5);
-    transform-origin: top left;
-    pointer-events: none;
-    border: none;
-  }
-
-  .project-info {
-    padding: 1.2rem 1.4rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .project-name {
-    font-size: 0.9rem;
-    font-weight: 400;
-  }
-
-  .project-url {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    margin-top: 0.2rem;
-  }
-
-  .project-arrow {
-    color: var(--muted);
-    font-size: 1rem;
-    transition: transform 0.2s, color 0.2s;
-  }
-
-  .project:hover .project-arrow { transform: translate(2px, -2px); color: var(--accent); }
-
-  /* CONTACT */
-  .contact-box {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-  }
-
-  .contact-box h2 { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; }
-  .contact-box p { color: var(--muted); font-size: 0.9rem; margin-top: 0.4rem; }
-
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 1.5rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  footer span { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* TABLET */
-  @media (max-width: 768px) {
-    nav { padding: 1rem 2rem; }
-    nav ul { gap: 1.2rem; }
-    .hero { padding: 5rem 2rem 4rem; }
-    .services, .portfolio, .contact { padding-left: 2rem; padding-right: 2rem; }
-    .divider { margin: 0 2rem; }
-    .portfolio-grid { grid-template-columns: 1fr; }
-    .project-preview { height: 200px; }
-    .project-preview iframe { width: 150%; height: 150%; transform: scale(0.67); }
-    footer { padding: 1.5rem 2rem; }
-  }
-
-  /* MOBILE */
-  @media (max-width: 480px) {
-    nav { padding: 1rem 1.2rem; }
-    nav ul { gap: 0.8rem; }
-    nav ul a { font-size: 0.8rem; }
-    .logo-svg { height: 38px; }
-    .hero { padding: 4rem 1.2rem 3rem; }
-    h1 { font-size: 2.4rem; }
-    .subtitle { font-size: 1rem; }
-    .cta-group { flex-direction: column; }
-    .btn { justify-content: center; }
-    .services, .portfolio, .contact { padding-left: 1.2rem; padding-right: 1.2rem; }
-    .services { padding-top: 3.5rem; padding-bottom: 3.5rem; }
-    .portfolio { padding-top: 3.5rem; padding-bottom: 3.5rem; }
-    .contact { padding-top: 3rem; padding-bottom: 5rem; }
-    .divider { margin: 0 1.2rem; }
-    .grid { grid-template-columns: 1fr; }
-    .portfolio-grid { grid-template-columns: 1fr; }
-    .contact-box { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
-    footer { padding: 1.2rem; flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+  @media(max-width:480px){
+    nav{padding:1rem 1.2rem} nav ul{gap:0.8rem} nav ul a{font-size:0.8rem}
+    .logo-svg{height:50px}
+    .hero{padding:4rem 1.2rem 3rem} h1{font-size:2.4rem} .subtitle{font-size:1rem}
+    .cta-group{flex-direction:column} .btn{justify-content:center}
+    .services,.contact{padding-left:1.2rem;padding-right:1.2rem}
+    .services{padding-top:3.5rem;padding-bottom:3.5rem}
+    .contact{padding-top:3rem;padding-bottom:5rem}
+    .divider{margin:0 1.2rem} .grid{grid-template-columns:1fr}
+    .contact-box{padding:2rem 1.5rem;flex-direction:column;align-items:flex-start}
+    footer{padding:1.2rem;flex-direction:column;gap:0.5rem;align-items:flex-start}
   }
 </style>
 </head>
 <body>
-
 <nav>
   <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100">
-    <defs>
-      <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#5aaeff"/>
-        <stop offset="100%" style="stop-color:#1a6fff"/>
-      </linearGradient>
-    </defs>
+    <defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#5aaeff"/><stop offset="100%" style="stop-color:#1a6fff"/></linearGradient></defs>
     <path d="M28,58 C18,58 10,50 10,41 C10,33 15,26 23,24 C23,14 31,7 41,7 C47,7 52,10 56,14 C59,9 65,6 72,6 C83,6 92,15 92,26 C92,27 92,28 91,29 C96,31 100,37 100,43 C100,51 93,58 85,58 Z" fill="url(#cg)"/>
-    <circle cx="42" cy="38" r="3.5" fill="white" opacity="0.9"/>
-    <circle cx="55" cy="33" r="5" fill="white" opacity="0.9"/>
-    <circle cx="70" cy="38" r="3.5" fill="white" opacity="0.9"/>
-    <ellipse cx="35" cy="58" rx="9" ry="5" fill="url(#cg)"/>
-    <ellipse cx="55" cy="61" rx="11" ry="6" fill="url(#cg)"/>
-    <ellipse cx="76" cy="58" rx="9" ry="5" fill="url(#cg)"/>
+    <circle cx="42" cy="38" r="3.5" fill="white" opacity="0.9"/><circle cx="55" cy="33" r="5" fill="white" opacity="0.9"/><circle cx="70" cy="38" r="3.5" fill="white" opacity="0.9"/>
+    <ellipse cx="35" cy="58" rx="9" ry="5" fill="url(#cg)"/><ellipse cx="55" cy="61" rx="11" ry="6" fill="url(#cg)"/><ellipse cx="76" cy="58" rx="9" ry="5" fill="url(#cg)"/>
     <text x="115" y="46" font-family="'DM Mono', monospace" font-size="28" font-weight="500" fill="#111">Clau<tspan fill="#1a6fff">Net</tspan></text>
     <text x="116" y="63" font-family="'DM Sans', sans-serif" font-size="10.5" font-weight="300" letter-spacing="1.5" fill="#aaa">SOPORTE · REDES · EQUIPOS · WEB</text>
   </svg>
   <ul>
     <li><a href="#servicios">servicios</a></li>
-    <li><a href="#portafolio">trabajos</a></li>
+    <li><a href="trabajos.html">trabajos</a></li>
     <li><a href="#contacto">contacto</a></li>
   </ul>
 </nav>
 
 <section class="hero">
-  <div class="badge">Biobío, Chile</div>
+  <div class="badge">Cañete, Biobío, Chile</div>
   <h1>Soporte técnico<br>y <em>desarrollo web.</em></h1>
   <p class="subtitle">Mantención de equipos, redes y páginas web para hogares, oficinas y pequeños negocios. Rápido, confiable y sin complicaciones.</p>
   <div class="cta-group">
@@ -356,67 +122,14 @@
       <h3>Soporte remoto</h3>
       <p>Asistencia técnica a distancia para resolver problemas sin salir de casa.</p>
     </div>
-    <div class="card" style="grid-column: span 2;">
+    <div class="card" style="grid-column:span 2;">
       <span class="card-icon">🌐</span>
       <h3>Desarrollo de páginas web</h3>
       <p>Diseño y desarrollo de sitios web modernos, rápidos y adaptados a tu negocio. Desde landing pages hasta sitios con gestión de contenido.</p>
     </div>
   </div>
-</section>
-
-<hr class="divider">
-
-<section class="portfolio" id="portafolio">
-  <p class="section-label">// trabajos recientes</p>
-  <div class="portfolio-grid">
-    <a href="https://endorfitness.cl" target="_blank" class="project">
-      <div class="project-preview">
-        <iframe src="https://endorfitness.cl" loading="lazy" scrolling="no" tabindex="-1"></iframe>
-      </div>
-      <div class="project-info">
-        <div>
-          <div class="project-name">Endor Fitness</div>
-          <div class="project-url">endorfitness.cl</div>
-        </div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-    <a href="https://albergo-hostal.vercel.app" target="_blank" class="project">
-      <div class="project-preview">
-        <iframe src="https://albergo-hostal.vercel.app" loading="lazy" scrolling="no" tabindex="-1"></iframe>
-      </div>
-      <div class="project-info">
-        <div>
-          <div class="project-name">Albergo Hostal</div>
-          <div class="project-url">albergo-hostal.vercel.app</div>
-        </div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-    <a href="https://ferreteria-la-italiana.vercel.app" target="_blank" class="project">
-      <div class="project-preview">
-        <iframe src="https://ferreteria-la-italiana.vercel.app" loading="lazy" scrolling="no" tabindex="-1"></iframe>
-      </div>
-      <div class="project-info">
-        <div>
-          <div class="project-name">Ferretería La Italiana</div>
-          <div class="project-url">ferreteria-la-italiana.vercel.app</div>
-        </div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-    <a href="https://ugs-marseille.vercel.app" target="_blank" class="project">
-      <div class="project-preview">
-        <iframe src="https://ugs-marseille.vercel.app" loading="lazy" scrolling="no" tabindex="-1"></iframe>
-      </div>
-      <div class="project-info">
-        <div>
-          <div class="project-name">UGS Marseille</div>
-          <div class="project-url">ugs-marseille.vercel.app</div>
-        </div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
+  <div class="trabajos-cta">
+    <a href="trabajos.html" class="btn btn-accent">Ver trabajos recientes ↗</a>
   </div>
 </section>
 
@@ -437,23 +150,13 @@
 
 <footer>
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100" height="32">
-    <defs>
-      <linearGradient id="cg2" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#5aaeff"/>
-        <stop offset="100%" style="stop-color:#1a6fff"/>
-      </linearGradient>
-    </defs>
+    <defs><linearGradient id="cg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#5aaeff"/><stop offset="100%" style="stop-color:#1a6fff"/></linearGradient></defs>
     <path d="M28,58 C18,58 10,50 10,41 C10,33 15,26 23,24 C23,14 31,7 41,7 C47,7 52,10 56,14 C59,9 65,6 72,6 C83,6 92,15 92,26 C92,27 92,28 91,29 C96,31 100,37 100,43 C100,51 93,58 85,58 Z" fill="url(#cg2)"/>
-    <circle cx="42" cy="38" r="3.5" fill="white" opacity="0.9"/>
-    <circle cx="55" cy="33" r="5" fill="white" opacity="0.9"/>
-    <circle cx="70" cy="38" r="3.5" fill="white" opacity="0.9"/>
-    <ellipse cx="35" cy="58" rx="9" ry="5" fill="url(#cg2)"/>
-    <ellipse cx="55" cy="61" rx="11" ry="6" fill="url(#cg2)"/>
-    <ellipse cx="76" cy="58" rx="9" ry="5" fill="url(#cg2)"/>
+    <circle cx="42" cy="38" r="3.5" fill="white" opacity="0.9"/><circle cx="55" cy="33" r="5" fill="white" opacity="0.9"/><circle cx="70" cy="38" r="3.5" fill="white" opacity="0.9"/>
+    <ellipse cx="35" cy="58" rx="9" ry="5" fill="url(#cg2)"/><ellipse cx="55" cy="61" rx="11" ry="6" fill="url(#cg2)"/><ellipse cx="76" cy="58" rx="9" ry="5" fill="url(#cg2)"/>
     <text x="115" y="46" font-family="'DM Mono', monospace" font-size="28" font-weight="500" fill="#111">Clau<tspan fill="#1a6fff">Net</tspan></text>
   </svg>
-  <span>© 2026 · Biobío, Chile</span>
+  <span>© 2026 · Cañete, Biobío, Chile</span>
 </footer>
-
 </body>
 </html>
