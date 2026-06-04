@@ -84,7 +84,7 @@
     <li><a href="#contacto">contacto</a></li>
   </ul>
 </nav>
-
+ 
 <section class="hero">
   <div class="badge">Cañete, Biobío, Chile</div>
   <h1>Soporte técnico<br>y <em>desarrollo web.</em></h1>
@@ -97,9 +97,9 @@
     <a href="#servicios" class="btn btn-secondary">Ver servicios</a>
   </div>
 </section>
-
+ 
 <hr class="divider">
-
+ 
 <section class="services" id="servicios">
   <p class="section-label">// servicios</p>
   <div class="grid">
@@ -133,9 +133,9 @@
     <a href="trabajos.html" class="btn btn-accent">Ver trabajos recientes ↗</a>
   </div>
 </section>
-
+ 
 <hr class="divider">
-
+ 
 <section class="contact" id="contacto">
   <div class="contact-box">
     <div>
@@ -148,7 +148,7 @@
     </a>
   </div>
 </section>
-
+ 
 <footer>
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100" height="32">
     <defs><linearGradient id="cg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#5aaeff"/><stop offset="100%" style="stop-color:#1a6fff"/></linearGradient></defs>
@@ -159,10 +159,10 @@
   </svg>
   <span>© 2026 · Cañete, Biobío, Chile</span>
 </footer>
-
+ 
 <!-- Reproductor flotante -->
 <div id="radio-player" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;font-family:'DM Sans',sans-serif;">
-
+ 
   <!-- Botón flotante nube -->
   <button onclick="toggleRadio()" title="Radio" style="
     width:56px;height:56px;border-radius:50%;border:none;
@@ -178,7 +178,7 @@
       <ellipse cx="72" cy="58" rx="10" ry="6" fill="rgba(255,255,255,0.9)"/>
     </svg>
   </button>
-
+ 
   <!-- Panel -->
   <div id="radio-panel" style="
     display:none;position:absolute;bottom:68px;right:0;
@@ -199,7 +199,7 @@
         <div id="radio-location" style="color:rgba(255,255,255,0.7);font-size:0.68rem;font-family:'DM Mono',monospace;letter-spacing:0.05em;">● EN VIVO · CAÑETE</div>
       </div>
     </div>
-
+ 
     <!-- Selector -->
     <div style="padding:0.8rem;border-bottom:1px solid #f0f0f0;display:flex;flex-wrap:wrap;gap:0.4rem;">
       <button onclick="changeRadio('kawaii','CAÑETE','https://www.kwii.xyz/stream')" id="btn-kawaii" class="rbtn" style="padding:0.3rem 0.7rem;border-radius:100px;border:1px solid #1a6fff;background:#1a6fff;color:#fff;font-size:0.72rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.2s;">Cañete 🏠</button>
@@ -208,12 +208,12 @@
       <button onclick="changeRadio('sabaudia','SABAUDIA','https://radio.garden/visit/sabaudia/QS_q8kLM')" id="btn-sabaudia" class="rbtn" style="padding:0.3rem 0.7rem;border-radius:100px;border:1px solid #e8e8e8;background:#fff;color:#999;font-size:0.72rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.2s;">Sabaudia</button>
       <button onclick="changeRadio('antwerp','ANTWERP','https://radio.garden/visit/antwerp/JiLW5qtr')" id="btn-antwerp" class="rbtn" style="padding:0.3rem 0.7rem;border-radius:100px;border:1px solid #e8e8e8;background:#fff;color:#999;font-size:0.72rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.2s;">Antwerp</button>
     </div>
-
+ 
     <!-- Reproductor audio para Cañete -->
     <div id="audio-container" style="padding:1rem 1.2rem;">
       <audio id="radio-audio" controls style="width:100%;height:36px;" src="https://www.kwii.xyz/stream"></audio>
     </div>
-
+ 
     <!-- Enlace externo para las otras -->
     <div id="link-container" style="display:none;padding:1rem 1.2rem;text-align:center;">
       <p style="font-size:0.8rem;color:#999;margin-bottom:0.8rem;">Esta radio abre en Radio Garden</p>
@@ -223,17 +223,17 @@
     </div>
   </div>
 </div>
-
+ 
 <style>
   @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 </style>
-
+ 
 <script>
   function toggleRadio() {
     const panel = document.getElementById('radio-panel');
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
   }
-
+ 
   function changeRadio(id, location, url) {
     document.getElementById('radio-location').textContent = '● EN VIVO · ' + location;
     document.querySelectorAll('.rbtn').forEach(b => {
@@ -241,7 +241,7 @@
     });
     const active = document.getElementById('btn-' + id);
     if(active) { active.style.background='#1a6fff'; active.style.color='#fff'; active.style.borderColor='#1a6fff'; }
-
+ 
     if(id === 'kawaii') {
       document.getElementById('audio-container').style.display = 'block';
       document.getElementById('link-container').style.display = 'none';
@@ -255,6 +255,7 @@
     }
   }
 </script>
-
+ 
 </body>
 </html>
+ 
