@@ -159,5 +159,86 @@
   </svg>
   <span>© 2026 · Cañete, Biobío, Chile</span>
 </footer>
+
+<!-- Reproductor flotante Radio Garden -->
+<div id="radio-player" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;font-family:'DM Sans',sans-serif;">
+
+  <!-- Botón flotante nube -->
+  <button onclick="toggleRadio()" title="Radio" style="
+    width:56px;height:56px;border-radius:50%;border:none;
+    background:linear-gradient(135deg,#5aaeff,#1a6fff);
+    box-shadow:0 4px 20px rgba(26,111,255,0.4);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:transform 0.2s,box-shadow 0.2s;
+  " onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 75" width="30" height="22">
+      <path d="M18,58 C10,58 3,51 3,43 C3,35 8,28 16,26 C16,16 24,8 34,8 C40,8 46,11 50,16 C53,11 59,8 66,8 C77,8 86,17 86,28 C90,30 94,36 94,43 C94,51 87,58 79,58 Z" fill="rgba(255,255,255,0.9)"/>
+      <ellipse cx="28" cy="58" rx="10" ry="6" fill="rgba(255,255,255,0.9)"/>
+      <ellipse cx="50" cy="63" rx="13" ry="7" fill="rgba(255,255,255,0.9)"/>
+      <ellipse cx="72" cy="58" rx="10" ry="6" fill="rgba(255,255,255,0.9)"/>
+    </svg>
+  </button>
+
+  <!-- Panel -->
+  <div id="radio-panel" style="
+    display:none;position:absolute;bottom:68px;right:0;
+    width:290px;background:#fff;border:1px solid #e8e8e8;
+    border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.12);
+    overflow:hidden;animation:slideUp 0.2s ease;
+  ">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#5aaeff,#1a6fff);padding:1rem 1.2rem;display:flex;align-items:center;gap:0.7rem;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 75" width="28" height="21">
+        <path d="M18,58 C10,58 3,51 3,43 C3,35 8,28 16,26 C16,16 24,8 34,8 C40,8 46,11 50,16 C53,11 59,8 66,8 C77,8 86,17 86,28 C90,30 94,36 94,43 C94,51 87,58 79,58 Z" fill="rgba(255,255,255,0.9)"/>
+        <ellipse cx="28" cy="58" rx="10" ry="6" fill="rgba(255,255,255,0.9)"/>
+        <ellipse cx="50" cy="63" rx="13" ry="7" fill="rgba(255,255,255,0.9)"/>
+        <ellipse cx="72" cy="58" rx="10" ry="6" fill="rgba(255,255,255,0.9)"/>
+      </svg>
+      <div>
+        <div style="color:#fff;font-size:0.85rem;font-weight:400;">Clau<span style="opacity:0.8">Net</span> Radio</div>
+        <div id="radio-location" style="color:rgba(255,255,255,0.7);font-size:0.68rem;font-family:'DM Mono',monospace;letter-spacing:0.05em;">● EN VIVO · CAMBRIDGE</div>
+      </div>
+    </div>
+
+    <!-- Selector de radios -->
+    <div style="padding:0.8rem;border-bottom:1px solid #f0f0f0;display:flex;flex-wrap:wrap;gap:0.4rem;">
+      <button onclick="changeRadio('rveXE9RD','CAMBRIDGE')" class="radio-btn active-btn" id="btn-rveXE9RD" style="padding:0.3rem 0.7rem;border-radius:100px;border:1px solid #1a6fff;background:#1a6fff;color:#fff;font-size:0.72rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.2s;">Cambridge</button>
+      <button onclick="changeRadio('eR8K4rBb','TOKYO')" class="radio-btn" id="btn-eR8K4rBb" style="padding:0.3rem 0.7rem;border-radius:100px;border:1px solid #e8e8e8;background:#fff;color:#999;font-size:0.72rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.2s;">Tokyo</button>
+      <button onclick="changeRadio('QS_q8kLM','SABAUDIA')" class="radio-btn" id="btn-QS_q8kLM" style="padding:0.3rem 0.7rem;border-radius:100px;border:1px solid #e8e8e8;background:#fff;color:#999;font-size:0.72rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.2s;">Sabaudia</button>
+      <button onclick="changeRadio('EGnXmLar','CAÑETE')" class="radio-btn" id="btn-EGnXmLar" style="padding:0.3rem 0.7rem;border-radius:100px;border:1px solid #e8e8e8;background:#fff;color:#999;font-size:0.72rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.2s;">Cañete 🏠</button>
+      <button onclick="changeRadio('JiLW5qtr','ANTWERP')" class="radio-btn" id="btn-JiLW5qtr" style="padding:0.3rem 0.7rem;border-radius:100px;border:1px solid #e8e8e8;background:#fff;color:#999;font-size:0.72rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.2s;">Antwerp</button>
+    </div>
+
+    <!-- Iframe -->
+    <iframe id="radio-iframe"
+      src="https://radio.garden/listen/rveXE9RD/embed"
+      frameborder="0" width="290" height="150"
+      style="display:block;" allow="autoplay">
+    </iframe>
+  </div>
+</div>
+
+<style>
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+</style>
+
+<script>
+  function toggleRadio() {
+    const panel = document.getElementById('radio-panel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  }
+  function changeRadio(code, location) {
+    document.getElementById('radio-iframe').src = 'https://radio.garden/listen/' + code + '/embed';
+    document.getElementById('radio-location').textContent = '● EN VIVO · ' + location;
+    document.querySelectorAll('.radio-btn').forEach(btn => {
+      btn.style.background = '#fff';
+      btn.style.color = '#999';
+      btn.style.borderColor = '#e8e8e8';
+    });
+    const active = document.getElementById('btn-' + code);
+    if(active) { active.style.background='#1a6fff'; active.style.color='#fff'; active.style.borderColor='#1a6fff'; }
+  }
+</script>
+
 </body>
 </html>
