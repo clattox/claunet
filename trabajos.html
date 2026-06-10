@@ -4,36 +4,91 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trabajos — ClauNet</title>
+
+<meta property="og:title" content="Trabajos — ClauNet">
+<meta property="og:description" content="Proyectos web desarrollados por ClauNet para clientes en la región del Biobío.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://claunet.cl/trabajos.html">
+<meta property="og:image" content="https://claunet.cl/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Proyectos web desarrollados por ClauNet para clientes en la región del Biobío.">
+
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%235aaeff'/><stop offset='100%' stop-color='%231a6fff'/></linearGradient></defs><path d='M20,62 C10,62 2,54 2,44 C2,35 8,27 17,25 C17,14 26,6 37,6 C44,6 50,9 54,14 C57,9 64,6 72,6 C84,6 94,16 94,28 C95,30 96,32 96,35 C96,35 98,38 98,44 C98,53 90,62 80,62 Z' fill='url(%23g)'/><circle cx='38' cy='38' r='5' fill='white' opacity='0.9'/><circle cx='55' cy='32' r='7' fill='white' opacity='0.9'/><circle cx='72' cy='38' r='5' fill='white' opacity='0.9'/><ellipse cx='30' cy='62' rx='12' ry='7' fill='url(%23g)'/><ellipse cx='55' cy='67' rx='15' ry='8' fill='url(%23g)'/><ellipse cx='78' cy='62' rx='12' ry='7' fill='url(%23g)'/></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root { --bg:#ffffff; --bg2:#f7f7f5; --border:#e8e8e8; --text:#111; --muted:#999; --accent:#1a6fff; --accent2:#3d85ff; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-weight:300; min-height:100vh; overflow-x:hidden; }
+
+  :root {
+    --bg:#ffffff; --bg2:#f7f7f5; --border:#e8e8e8;
+    --text:#111; --muted:#999; --accent:#1a6fff; --accent2:#3d85ff;
+    --card-shadow: rgba(0,0,0,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0f0f0f; --bg2:#1a1a1a; --border:#2a2a2a;
+      --text:#f0f0f0; --muted:#666; --accent:#4d8fff; --accent2:#6aa3ff;
+      --card-shadow: rgba(0,0,0,0.4);
+    }
+  }
+
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-weight:300; min-height:100vh; overflow-x:hidden; transition:background 0.3s,color 0.3s; }
+
   nav { display:flex; justify-content:space-between; align-items:center; padding:1.2rem 3rem; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:100; }
   .logo-svg { height:64px; width:auto; }
+  .logo-text { fill:var(--text); }
   nav ul { list-style:none; display:flex; gap:2rem; }
   nav ul a { color:var(--muted); text-decoration:none; font-size:0.9rem; transition:color 0.2s; }
   nav ul a:hover, nav ul a.active { color:var(--text); }
+
   .page-hero { max-width:900px; margin:0 auto; padding:6rem 3rem 4rem; animation:fadeUp 0.6s ease both; }
   .section-label { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1.5rem; }
   h1 { font-size:clamp(2.2rem,5vw,3.5rem); font-weight:300; line-height:1.1; letter-spacing:-0.03em; margin-bottom:1rem; }
   h1 em { font-style:normal; color:var(--accent); }
   .subtitle { font-size:1rem; color:var(--muted); line-height:1.7; max-width:500px; }
+
   .portfolio { max-width:900px; margin:0 auto; padding:3rem 3rem 8rem; animation:fadeUp 0.6s ease 0.1s both; }
   .portfolio-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
-  .project { border:1px solid var(--border); border-radius:16px; overflow:hidden; transition:transform 0.2s,box-shadow 0.2s; text-decoration:none; color:var(--text); display:block; }
-  .project:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,0.1); }
-  .project-preview { width:100%; height:220px; background:var(--bg2); border-bottom:1px solid var(--border); overflow:hidden; position:relative; }
-  .project-preview iframe { width:200%; height:200%; transform:scale(0.5); transform-origin:top left; pointer-events:none; border:none; }
+
+  .project { border:1px solid var(--border); border-radius:16px; overflow:hidden; transition:transform 0.2s,box-shadow 0.2s; text-decoration:none; color:var(--text); display:block; background:var(--bg); }
+  .project:hover { transform:translateY(-4px); box-shadow:0 12px 40px var(--card-shadow); }
+
+  .project-preview {
+    width:100%; height:220px;
+    background:var(--bg2);
+    border-bottom:1px solid var(--border);
+    overflow:hidden; position:relative;
+  }
+  .project-preview img {
+    width:100%; height:100%;
+    object-fit:cover; object-position:top;
+    display:block;
+    transition:transform 0.4s ease;
+  }
+  .project:hover .project-preview img { transform:scale(1.03); }
+
+  /* Placeholder cuando no hay imagen */
+  .project-preview.no-img {
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.8rem;
+  }
+  .project-preview.no-img .ph-url {
+    font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted);
+  }
+  .project-preview.no-img svg { opacity:0.15; }
+
   .project-info { padding:1.4rem 1.6rem; display:flex; justify-content:space-between; align-items:center; }
   .project-name { font-size:1rem; font-weight:400; }
   .project-url { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); margin-top:0.3rem; }
-  .project-arrow { color:var(--muted); font-size:1.1rem; transition:transform 0.2s,color 0.2s; }
+  .project-arrow { color:var(--muted); font-size:1.1rem; transition:transform 0.2s,color 0.2s; flex-shrink:0; }
   .project:hover .project-arrow { transform:translate(2px,-2px); color:var(--accent); }
+
+  .project-tag { display:inline-block; font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); border:1px solid var(--border); border-radius:100px; padding:0.15rem 0.6rem; margin-top:0.4rem; }
+
   footer { border-top:1px solid var(--border); padding:1.5rem 3rem; display:flex; justify-content:space-between; align-items:center; }
   footer span { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); }
+
   @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
   @media(max-width:768px){
     nav{padding:1rem 2rem} nav ul{gap:1.2rem}
     .page-hero{padding:4rem 2rem 3rem}
@@ -51,6 +106,7 @@
 </style>
 </head>
 <body>
+
 <nav>
   <a href="index.html">
     <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100">
@@ -58,13 +114,13 @@
       <path d="M28,58 C18,58 10,50 10,41 C10,33 15,26 23,24 C23,14 31,7 41,7 C47,7 52,10 56,14 C59,9 65,6 72,6 C83,6 92,15 92,26 C92,27 92,28 91,29 C96,31 100,37 100,43 C100,51 93,58 85,58 Z" fill="url(#cg)"/>
       <circle cx="42" cy="38" r="3.5" fill="white" opacity="0.9"/><circle cx="55" cy="33" r="5" fill="white" opacity="0.9"/><circle cx="70" cy="38" r="3.5" fill="white" opacity="0.9"/>
       <ellipse cx="35" cy="58" rx="9" ry="5" fill="url(#cg)"/><ellipse cx="55" cy="61" rx="11" ry="6" fill="url(#cg)"/><ellipse cx="76" cy="58" rx="9" ry="5" fill="url(#cg)"/>
-      <text x="115" y="46" font-family="'DM Mono', monospace" font-size="28" font-weight="500" fill="#111">Clau<tspan fill="#1a6fff">Net</tspan></text>
+      <text x="115" y="46" font-family="'DM Mono', monospace" font-size="28" font-weight="500" class="logo-text">Clau<tspan fill="#1a6fff">Net</tspan></text>
       <text x="116" y="63" font-family="'DM Sans', sans-serif" font-size="10.5" font-weight="300" letter-spacing="1.5" fill="#aaa">SOPORTE · REDES · EQUIPOS · WEB</text>
     </svg>
   </a>
   <ul>
     <li><a href="index.html#servicios">servicios</a></li>
-    <li><a href="trabajos.html" class="active" style="color:var(--text)">trabajos</a></li>
+    <li><a href="trabajos.html" class="active">trabajos</a></li>
     <li><a href="index.html#contacto">contacto</a></li>
   </ul>
 </nav>
@@ -77,54 +133,63 @@
 
 <section class="portfolio">
   <div class="portfolio-grid">
+
     <a href="https://endorfitness.cl" target="_blank" class="project">
       <div class="project-preview">
-        <iframe src="https://endorfitness.cl" loading="lazy" scrolling="no" tabindex="-1"></iframe>
+        <img src="previews/endorfitness.jpg" alt="Endor Fitness" loading="lazy" onerror="this.parentElement.classList.add('no-img');this.style.display='none';this.parentElement.innerHTML+='<svg width=48 height=48 viewBox=\'0 0 100 78\' xmlns=\'http://www.w3.org/2000/svg\'><defs><linearGradient id=\'pi\' x1=\'0%\' y1=\'0%\' x2=\'100%\' y2=\'100%\'><stop offset=\'0%\' stop-color=\'#5aaeff\'/><stop offset=\'100%\' stop-color=\'#1a6fff\'/></linearGradient></defs><path d=\'M18,52 C10,52 3,45 3,37 C3,30 8,24 15,22 C15,14 22,8 31,8 C36,8 41,11 44,15 C47,11 52,8 58,8 C67,8 75,16 75,25 C79,27 82,32 82,37 C82,45 75,52 67,52 Z\' fill=\'url(%23pi)\'/><ellipse cx=\'24\' cy=\'52\' rx=\'8\' ry=\'5\' fill=\'url(%23pi)\'/><ellipse cx=\'43\' cy=\'57\' rx=\'10\' ry=\'5.5\' fill=\'url(%23pi)\'/><ellipse cx=\'62\' cy=\'52\' rx=\'8\' ry=\'5\' fill=\'url(%23pi)\'/></svg><span class=\'ph-url\'>endorfitness.cl</span>';">
       </div>
       <div class="project-info">
         <div>
           <div class="project-name">Endor Fitness</div>
           <div class="project-url">endorfitness.cl</div>
+          <span class="project-tag">gym · gestión · pagos</span>
         </div>
         <span class="project-arrow">↗</span>
       </div>
     </a>
+
     <a href="https://albergo-hostal.vercel.app" target="_blank" class="project">
       <div class="project-preview">
-        <iframe src="https://albergo-hostal.vercel.app" loading="lazy" scrolling="no" tabindex="-1"></iframe>
+        <img src="previews/albergo.jpg" alt="Albergo Hostal" loading="lazy" onerror="this.parentElement.classList.add('no-img');this.style.display='none';this.parentElement.innerHTML+='<svg width=48 height=48 viewBox=\'0 0 100 78\' xmlns=\'http://www.w3.org/2000/svg\'><defs><linearGradient id=\'pi2\' x1=\'0%\' y1=\'0%\' x2=\'100%\' y2=\'100%\'><stop offset=\'0%\' stop-color=\'#5aaeff\'/><stop offset=\'100%\' stop-color=\'#1a6fff\'/></linearGradient></defs><path d=\'M18,52 C10,52 3,45 3,37 C3,30 8,24 15,22 C15,14 22,8 31,8 C36,8 41,11 44,15 C47,11 52,8 58,8 C67,8 75,16 75,25 C79,27 82,32 82,37 C82,45 75,52 67,52 Z\' fill=\'url(%23pi2)\'/><ellipse cx=\'24\' cy=\'52\' rx=\'8\' ry=\'5\' fill=\'url(%23pi2)\'/><ellipse cx=\'43\' cy=\'57\' rx=\'10\' ry=\'5.5\' fill=\'url(%23pi2)\'/><ellipse cx=\'62\' cy=\'52\' rx=\'8\' ry=\'5\' fill=\'url(%23pi2)\'/></svg><span class=\'ph-url\'>albergo-hostal.vercel.app</span>';">
       </div>
       <div class="project-info">
         <div>
           <div class="project-name">Albergo Hostal</div>
           <div class="project-url">albergo-hostal.vercel.app</div>
+          <span class="project-tag">hostal · turismo</span>
         </div>
         <span class="project-arrow">↗</span>
       </div>
     </a>
+
     <a href="https://ferreteria-la-italiana.vercel.app" target="_blank" class="project">
       <div class="project-preview">
-        <iframe src="https://ferreteria-la-italiana.vercel.app" loading="lazy" scrolling="no" tabindex="-1"></iframe>
+        <img src="previews/ferreteria.jpg" alt="Ferretería La Italiana" loading="lazy" onerror="this.parentElement.classList.add('no-img');this.style.display='none';this.parentElement.innerHTML+='<svg width=48 height=48 viewBox=\'0 0 100 78\' xmlns=\'http://www.w3.org/2000/svg\'><defs><linearGradient id=\'pi3\' x1=\'0%\' y1=\'0%\' x2=\'100%\' y2=\'100%\'><stop offset=\'0%\' stop-color=\'#5aaeff\'/><stop offset=\'100%\' stop-color=\'#1a6fff\'/></linearGradient></defs><path d=\'M18,52 C10,52 3,45 3,37 C3,30 8,24 15,22 C15,14 22,8 31,8 C36,8 41,11 44,15 C47,11 52,8 58,8 C67,8 75,16 75,25 C79,27 82,32 82,37 C82,45 75,52 67,52 Z\' fill=\'url(%23pi3)\'/><ellipse cx=\'24\' cy=\'52\' rx=\'8\' ry=\'5\' fill=\'url(%23pi3)\'/><ellipse cx=\'43\' cy=\'57\' rx=\'10\' ry=\'5.5\' fill=\'url(%23pi3)\'/><ellipse cx=\'62\' cy=\'52\' rx=\'8\' ry=\'5\' fill=\'url(%23pi3)\'/></svg><span class=\'ph-url\'>ferreteria-la-italiana.vercel.app</span>';">
       </div>
       <div class="project-info">
         <div>
           <div class="project-name">Ferretería La Italiana</div>
           <div class="project-url">ferreteria-la-italiana.vercel.app</div>
+          <span class="project-tag">ferretería · catálogo</span>
         </div>
         <span class="project-arrow">↗</span>
       </div>
     </a>
+
     <a href="https://ugs-marseille.vercel.app" target="_blank" class="project">
       <div class="project-preview">
-        <iframe src="https://ugs-marseille.vercel.app" loading="lazy" scrolling="no" tabindex="-1"></iframe>
+        <img src="previews/ugs.jpg" alt="UGS Marseille" loading="lazy" onerror="this.parentElement.classList.add('no-img');this.style.display='none';this.parentElement.innerHTML+='<svg width=48 height=48 viewBox=\'0 0 100 78\' xmlns=\'http://www.w3.org/2000/svg\'><defs><linearGradient id=\'pi4\' x1=\'0%\' y1=\'0%\' x2=\'100%\' y2=\'100%\'><stop offset=\'0%\' stop-color=\'#5aaeff\'/><stop offset=\'100%\' stop-color=\'#1a6fff\'/></linearGradient></defs><path d=\'M18,52 C10,52 3,45 3,37 C3,30 8,24 15,22 C15,14 22,8 31,8 C36,8 41,11 44,15 C47,11 52,8 58,8 C67,8 75,16 75,25 C79,27 82,32 82,37 C82,45 75,52 67,52 Z\' fill=\'url(%23pi4)\'/><ellipse cx=\'24\' cy=\'52\' rx=\'8\' ry=\'5\' fill=\'url(%23pi4)\'/><ellipse cx=\'43\' cy=\'57\' rx=\'10\' ry=\'5.5\' fill=\'url(%23pi4)\'/><ellipse cx=\'62\' cy=\'52\' rx=\'8\' ry=\'5\' fill=\'url(%23pi4)\'/></svg><span class=\'ph-url\'>ugs-marseille.vercel.app</span>';">
       </div>
       <div class="project-info">
         <div>
           <div class="project-name">UGS Marseille</div>
           <div class="project-url">ugs-marseille.vercel.app</div>
+          <span class="project-tag">asociación · guías · Francia</span>
         </div>
         <span class="project-arrow">↗</span>
       </div>
     </a>
+
   </div>
 </section>
 
@@ -134,9 +199,10 @@
     <path d="M28,58 C18,58 10,50 10,41 C10,33 15,26 23,24 C23,14 31,7 41,7 C47,7 52,10 56,14 C59,9 65,6 72,6 C83,6 92,15 92,26 C92,27 92,28 91,29 C96,31 100,37 100,43 C100,51 93,58 85,58 Z" fill="url(#cg2)"/>
     <circle cx="42" cy="38" r="3.5" fill="white" opacity="0.9"/><circle cx="55" cy="33" r="5" fill="white" opacity="0.9"/><circle cx="70" cy="38" r="3.5" fill="white" opacity="0.9"/>
     <ellipse cx="35" cy="58" rx="9" ry="5" fill="url(#cg2)"/><ellipse cx="55" cy="61" rx="11" ry="6" fill="url(#cg2)"/><ellipse cx="76" cy="58" rx="9" ry="5" fill="url(#cg2)"/>
-    <text x="115" y="46" font-family="'DM Mono', monospace" font-size="28" font-weight="500" fill="#111">Clau<tspan fill="#1a6fff">Net</tspan></text>
+    <text x="115" y="46" font-family="'DM Mono', monospace" font-size="28" font-weight="500" class="logo-text">Clau<tspan fill="#1a6fff">Net</tspan></text>
   </svg>
   <span>© 2026 · Cañete, Biobío, Chile</span>
 </footer>
+
 </body>
 </html>
