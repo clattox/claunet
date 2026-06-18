@@ -15,95 +15,7 @@
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%235aaeff'/><stop offset='100%' stop-color='%231a6fff'/></linearGradient></defs><path d='M20,62 C10,62 2,54 2,44 C2,35 8,27 17,25 C17,14 26,6 37,6 C44,6 50,9 54,14 C57,9 64,6 72,6 C84,6 94,16 94,28 C95,30 96,32 96,35 C96,35 98,38 98,44 C98,53 90,62 80,62 Z' fill='url(%23g)'/><circle cx='38' cy='38' r='5' fill='white' opacity='0.9'/><circle cx='55' cy='32' r='7' fill='white' opacity='0.9'/><circle cx='72' cy='38' r='5' fill='white' opacity='0.9'/><ellipse cx='30' cy='62' rx='12' ry='7' fill='url(%23g)'/><ellipse cx='55' cy='67' rx='15' ry='8' fill='url(%23g)'/><ellipse cx='78' cy='62' rx='12' ry='7' fill='url(%23g)'/></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg:#ffffff; --bg2:#f7f7f5; --border:#e8e8e8;
-    --text:#111; --muted:#999; --accent:#1a6fff; --accent2:#3d85ff;
-    --card-shadow: rgba(0,0,0,0.08);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg:#0f0f0f; --bg2:#1a1a1a; --border:#2a2a2a;
-      --text:#f0f0f0; --muted:#666; --accent:#4d8fff; --accent2:#6aa3ff;
-      --card-shadow: rgba(0,0,0,0.4);
-    }
-  }
-
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-weight:300; min-height:100vh; overflow-x:hidden; transition:background 0.3s,color 0.3s; }
-
-  nav { display:flex; justify-content:space-between; align-items:center; padding:1.2rem 3rem; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:100; }
-  .logo-svg { height:64px; width:auto; }
-  .logo-text { fill:var(--text); }
-  nav ul { list-style:none; display:flex; gap:2rem; }
-  nav ul a { color:var(--muted); text-decoration:none; font-size:0.9rem; transition:color 0.2s; }
-  nav ul a:hover, nav ul a.active { color:var(--text); }
-
-  .page-hero { max-width:900px; margin:0 auto; padding:6rem 3rem 4rem; animation:fadeUp 0.6s ease both; }
-  .section-label { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1.5rem; }
-  h1 { font-size:clamp(2.2rem,5vw,3.5rem); font-weight:300; line-height:1.1; letter-spacing:-0.03em; margin-bottom:1rem; }
-  h1 em { font-style:normal; color:var(--accent); }
-  .subtitle { font-size:1rem; color:var(--muted); line-height:1.7; max-width:500px; }
-
-  .portfolio { max-width:900px; margin:0 auto; padding:3rem 3rem 8rem; animation:fadeUp 0.6s ease 0.1s both; }
-  .portfolio-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
-
-  .project { border:1px solid var(--border); border-radius:16px; overflow:hidden; transition:transform 0.2s,box-shadow 0.2s; text-decoration:none; color:var(--text); display:block; background:var(--bg); }
-  .project:hover { transform:translateY(-4px); box-shadow:0 12px 40px var(--card-shadow); }
-
-  .project-preview {
-    width:100%; height:220px;
-    background:var(--bg2);
-    border-bottom:1px solid var(--border);
-    overflow:hidden; position:relative;
-  }
-  .project-preview img {
-    width:100%; height:100%;
-    object-fit:cover; object-position:top;
-    display:block;
-    transition:transform 0.4s ease;
-  }
-  .project:hover .project-preview img { transform:scale(1.03); }
-
-  /* Placeholder cuando no hay imagen */
-  .project-preview.no-img {
-    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.8rem;
-  }
-  .project-preview.no-img .ph-url {
-    font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted);
-  }
-  .project-preview.no-img svg { opacity:0.15; }
-
-  .project-info { padding:1.4rem 1.6rem; display:flex; justify-content:space-between; align-items:center; }
-  .project-name { font-size:1rem; font-weight:400; }
-  .project-url { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); margin-top:0.3rem; }
-  .project-arrow { color:var(--muted); font-size:1.1rem; transition:transform 0.2s,color 0.2s; flex-shrink:0; }
-  .project:hover .project-arrow { transform:translate(2px,-2px); color:var(--accent); }
-
-  .project-tag { display:inline-block; font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); border:1px solid var(--border); border-radius:100px; padding:0.15rem 0.6rem; margin-top:0.4rem; }
-
-  footer { border-top:1px solid var(--border); padding:1.5rem 3rem; display:flex; justify-content:space-between; align-items:center; }
-  footer span { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); }
-
-  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-
-  @media(max-width:768px){
-    nav{padding:1rem 2rem} nav ul{gap:1.2rem}
-    .page-hero{padding:4rem 2rem 3rem}
-    .portfolio{padding-left:2rem;padding-right:2rem}
-    .portfolio-grid{grid-template-columns:1fr}
-    footer{padding:1.5rem 2rem}
-  }
-  @media(max-width:480px){
-    nav{padding:1rem 1.2rem} nav ul{gap:0.8rem} nav ul a{font-size:0.8rem}
-    .logo-svg{height:50px}
-    .page-hero{padding:3rem 1.2rem 2rem}
-    .portfolio{padding-left:1.2rem;padding-right:1.2rem;padding-bottom:5rem}
-    footer{padding:1.2rem;flex-direction:column;gap:0.5rem;align-items:flex-start}
-  }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -123,6 +35,14 @@
     <li><a href="trabajos.html" class="active">trabajos</a></li>
     <li><a href="index.html#contacto">contacto</a></li>
   </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+    <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  </button>
 </nav>
 
 <section class="page-hero">
@@ -229,8 +149,37 @@
     <ellipse cx="35" cy="58" rx="9" ry="5" fill="url(#cg2)"/><ellipse cx="55" cy="61" rx="11" ry="6" fill="url(#cg2)"/><ellipse cx="76" cy="58" rx="9" ry="5" fill="url(#cg2)"/>
     <text x="115" y="46" font-family="'DM Mono', monospace" font-size="28" font-weight="500" class="logo-text">Clau<tspan fill="#1a6fff">Net</tspan></text>
   </svg>
+  <ul class="footer-links">
+    <li><a href="index.html#servicios">servicios</a></li>
+    <li><a href="trabajos.html">trabajos</a></li>
+    <li><a href="index.html#contacto">contacto</a></li>
+    <li><a href="https://wa.me/56982540503" target="_blank">whatsapp</a></li>
+  </ul>
   <span>© 2026 · Cañete, Biobío, Chile</span>
 </footer>
 
+<script>
+  const toggle = document.getElementById('themeToggle');
+  const iconSun = document.getElementById('iconSun');
+  const iconMoon = document.getElementById('iconMoon');
+
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = saved ? saved === 'dark' : prefersDark;
+
+  function applyTheme(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    iconSun.style.display = dark ? 'block' : 'none';
+    iconMoon.style.display = dark ? 'none' : 'block';
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  }
+
+  applyTheme(isDark);
+
+  toggle.addEventListener('click', () => {
+    const currentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    applyTheme(!currentlyDark);
+  });
+</script>
 </body>
 </html>
