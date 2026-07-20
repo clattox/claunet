@@ -1,0 +1,115 @@
+/* ============================================
+   Cookie consent banner — Ley 21.719
+   Usa las mismas variables de tema que el resto
+   del sitio (data-theme="light" | "dark")
+   ============================================ */
+
+.cookie-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.75rem;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+  font-family: 'DM Sans', sans-serif;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+[data-theme="dark"] .cookie-banner {
+  background: #14161a;
+  border-top-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.cookie-banner.cookie-hidden {
+  transform: translateY(110%);
+  pointer-events: none;
+}
+
+.cookie-banner p {
+  margin: 0;
+  max-width: 640px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #444;
+}
+
+[data-theme="dark"] .cookie-banner p {
+  color: #ccc;
+}
+
+.cookie-banner a {
+  color: #1a6fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cookie-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.cookie-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.6rem 1.3rem;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+/* Mismo tamaño y jerarquía visual para ambos botones (Ley 21.719) */
+.cookie-btn-reject {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #444;
+}
+
+[data-theme="dark"] .cookie-btn-reject {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ddd;
+}
+
+.cookie-btn-reject:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .cookie-btn-reject:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cookie-btn-accept {
+  background: linear-gradient(135deg, #5aaeff, #1a6fff);
+  color: #fff;
+}
+
+.cookie-btn-accept:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 640px) {
+  .cookie-banner {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+  }
+  .cookie-actions {
+    width: 100%;
+  }
+  .cookie-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
