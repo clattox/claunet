@@ -2,7 +2,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:#ffffff; --bg2:#f7f7f5; --border:#e8e8e8;
+  --bg:#f5f6f8; --bg2:#f7f7f5; --border:#e8e8e8;
   --text:#111; --muted:#999; --accent:#1a6fff; --accent2:#3d85ff;
   --card-shadow: rgba(0,0,0,0.08);
 }
@@ -16,7 +16,7 @@
 }
 
 [data-theme="light"] {
-  --bg: #ffffff;
+  --bg: #f5f6f8;
   --bg2: #f7f7f5;
   --border: #e8e8e8;
   --text: #111;

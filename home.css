@@ -10,7 +10,7 @@
 
 /* ===== Design tokens ===== */
 :root {
-  --bg: #ffffff;
+  --bg: #f5f6f8;
   --bg2: #f7f7f5;
   --border: #e8e8e8;
   --text: #111111;
@@ -34,7 +34,7 @@
 }
 
 [data-theme="light"] {
-  --bg: #ffffff; --bg2: #f7f7f5; --border: #e8e8e8;
+  --bg: #f5f6f8; --bg2: #f7f7f5; --border: #e8e8e8;
   --text: #111111; --muted: #9a9a9a; --accent: #1a6fff; --accent2: #5aaeff;
 }
 
