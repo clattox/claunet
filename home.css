@@ -574,6 +574,28 @@ body {
 
 .site-footer .footer-links a:hover { color: var(--text); }
 
+.footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.footer-social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.footer-social svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.footer-social:hover { color: var(--accent); }
+
 /* ===== Lab / Contact / Footer — responsive ===== */
 @media (max-width: 768px) {
   .lab { padding: 4.5rem 1.5rem 5rem; }
