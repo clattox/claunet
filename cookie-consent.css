@@ -1,7 +1,11 @@
 /* ============================================
    Cookie consent banner — Ley 21.719
-   Usa las mismas variables de tema que el resto
-   del sitio (data-theme="light" | "dark")
+   Usa los tokens de base.css (--bg, --text, --muted,
+   --border, --accent-strong), por lo que sigue el tema
+   activo sin duplicar colores.
+   Los nombres de clase son los que espera cookie-consent.js:
+   .cookie-banner · .cookie-hidden · .cookie-actions
+   .cookie-btn · .cookie-btn-accept · .cookie-btn-reject
    ============================================ */
 
 .cookie-banner {
@@ -15,19 +19,17 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.25rem 1.75rem;
-  background: #ffffff;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
-  font-family: 'DM Sans', sans-serif;
+  padding: 1.25rem clamp(1.4rem, 5vw, 4rem);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.07);
+  font-family: var(--font-sans);
   transform: translateY(0);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s var(--ease);
 }
 
-[data-theme="dark"] .cookie-banner {
-  background: #14161a;
-  border-top-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+:root[data-theme="dark"] .cookie-banner {
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.35);
 }
 
 .cookie-banner.cookie-hidden {
@@ -40,16 +42,11 @@
   max-width: 640px;
   font-size: 0.9rem;
   line-height: 1.5;
-  color: #444;
-}
-
-[data-theme="dark"] .cookie-banner p {
-  color: #ccc;
+  color: var(--muted);
 }
 
 .cookie-banner a {
-  color: #1a6fff;
-  text-decoration: underline;
+  color: var(--accent-strong);
   text-underline-offset: 2px;
 }
 
@@ -60,44 +57,31 @@
 }
 
 .cookie-btn {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 400;
   padding: 0.6rem 1.3rem;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: opacity 0.2s ease, background 0.2s ease;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
 }
 
 /* Mismo tamaño y jerarquía visual para ambos botones (Ley 21.719) */
 .cookie-btn-reject {
   background: transparent;
-  border-color: rgba(0, 0, 0, 0.15);
-  color: #444;
+  border-color: var(--border);
+  color: var(--text);
 }
 
-[data-theme="dark"] .cookie-btn-reject {
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #ddd;
-}
-
-.cookie-btn-reject:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-[data-theme="dark"] .cookie-btn-reject:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
+.cookie-btn-reject:hover { background: var(--bg2); }
 
 .cookie-btn-accept {
-  background: linear-gradient(135deg, #5aaeff, #1a6fff);
-  color: #fff;
+  background: var(--accent-strong);
+  color: var(--bg);
 }
 
-.cookie-btn-accept:hover {
-  opacity: 0.9;
-}
+.cookie-btn-accept:hover { background: var(--accent); }
 
 @media (max-width: 640px) {
   .cookie-banner {
@@ -105,9 +89,9 @@
     align-items: stretch;
     text-align: left;
   }
-  .cookie-actions {
-    width: 100%;
-  }
+
+  .cookie-actions { width: 100%; }
+
   .cookie-btn {
     flex: 1;
     text-align: center;

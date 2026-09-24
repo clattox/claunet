@@ -3,159 +3,335 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClauNet — Claudio Torres</title>
+<title>ClauNet — Diseño, desarrollo web y experimentos | Claudio Torres</title>
 
 <!-- OG / Social -->
-<meta property="og:title" content="ClauNet — Claudio Torres">
-<meta property="og:description" content="Diseño. Tecnología. Ideas. — Proyectos web de Claudio Torres (ClauNet), desde Cañete, Biobío, Chile.">
+<meta property="og:title" content="ClauNet — A place for things I build">
+<meta property="og:description" content="Diseño y construyo sitios web, aplicaciones y experimentos digitales desde Cañete, Chile.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://claunet.cl">
 <meta property="og:image" content="https://claunet.cl/og-image.png">
+<meta property="og:image:alt" content="ClauNet — A place for things I build">
+<meta property="og:locale" content="es_CL">
+<meta property="og:site_name" content="ClauNet">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ClauNet — Claudio Torres">
-<meta name="twitter:description" content="Diseño. Tecnología. Ideas. — Proyectos web de Claudio Torres (ClauNet), desde Cañete, Biobío, Chile.">
-<meta name="description" content="Diseño. Tecnología. Ideas. — Proyectos web de Claudio Torres (ClauNet), desde Cañete, Biobío, Chile.">
+<meta name="twitter:title" content="ClauNet — A place for things I build">
+<meta name="twitter:description" content="Diseño y construyo sitios web, aplicaciones y experimentos digitales desde Cañete, Chile.">
+<meta name="twitter:image" content="https://claunet.cl/og-image.png">
+<meta name="description" content="Diseño y construyo sitios web, aplicaciones y experimentos digitales desde Cañete, Chile. Proyectos web, laboratorio de experimentos y trabajo de Claudio Torres (ClauNet).">
+<meta name="author" content="Claudio Torres">
+<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0f0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://claunet.cl/">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%235aaeff'/><stop offset='100%' stop-color='%231a6fff'/></linearGradient></defs><path d='M20,62 C10,62 2,54 2,44 C2,35 8,27 17,25 C17,14 26,6 37,6 C44,6 50,9 54,14 C57,9 64,6 72,6 C84,6 94,16 94,28 C95,30 96,32 96,35 C96,35 98,38 98,44 C98,53 90,62 80,62 Z' fill='url(%23g)'/><circle cx='38' cy='38' r='5' fill='white' opacity='0.9'/><circle cx='55' cy='32' r='7' fill='white' opacity='0.9'/><circle cx='72' cy='38' r='5' fill='white' opacity='0.9'/><ellipse cx='30' cy='62' rx='12' ry='7' fill='url(%23g)'/><ellipse cx='55' cy='67' rx='15' ry='8' fill='url(%23g)'/><ellipse cx='78' cy='62' rx='12' ry='7' fill='url(%23g)'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
 <link rel="stylesheet" href="home.css">
 <link rel="stylesheet" href="cookie-consent.css">
+
+<script>
+  /* Tema antes del primer pintado: evita el flash de tema.
+     La interacción vive en site.js. */
+  (function () {
+    try {
+      var saved = localStorage.getItem('theme');
+      var dark = saved ? saved === 'dark'
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+    document.documentElement.classList.add('js');
+    // Si site.js no llega, se libera el contenido (nada queda oculto)
+    window.addEventListener('load', function () {
+      if (!window.__claunetReady) {
+        document.documentElement.classList.remove('js');
+      }
+    });
+  })();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Claudio Torres",
+  "alternateName": "ClauNet",
+  "url": "https://claunet.cl",
+  "description": "Diseño y construyo sitios web, aplicaciones y experimentos digitales desde Cañete, Chile.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Cañete",
+    "addressRegion": "Biobío",
+    "addressCountry": "CL"
+  }
+}
+</script>
 </head>
 <body>
 
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Navegación principal">
   <a href="index.html" class="nav-logo" aria-label="ClauNet — inicio">
-    <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100">
+    <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100" role="img" aria-label="ClauNet">
       <defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#5aaeff"/><stop offset="100%" style="stop-color:#1a6fff"/></linearGradient></defs>
       <path d="M28,58 C18,58 10,50 10,41 C10,33 15,26 23,24 C23,14 31,7 41,7 C47,7 52,10 56,14 C59,9 65,6 72,6 C83,6 92,15 92,26 C92,27 92,28 91,29 C96,31 100,37 100,43 C100,51 93,58 85,58 Z" fill="url(#cg)"/>
       <circle cx="42" cy="38" r="3.5" fill="white" opacity="0.9"/><circle cx="55" cy="33" r="5" fill="white" opacity="0.9"/><circle cx="70" cy="38" r="3.5" fill="white" opacity="0.9"/>
       <ellipse cx="35" cy="58" rx="9" ry="5" fill="url(#cg)"/><ellipse cx="55" cy="61" rx="11" ry="6" fill="url(#cg)"/><ellipse cx="76" cy="58" rx="9" ry="5" fill="url(#cg)"/>
-      <text x="115" y="46" font-family="'DM Mono', monospace" font-size="28" font-weight="500" class="logo-text">Clau<tspan fill="#1a6fff">Net</tspan></text>
-      <text x="116" y="63" font-family="'DM Sans', sans-serif" font-size="10.5" font-weight="300" letter-spacing="1.5" fill="#aaa">SOPORTE · REDES · EQUIPOS · WEB</text>
+      <text x="115" y="46" font-family="'DM Mono', monospace" font-size="28" font-weight="500" class="logo-text">Clau<tspan class="logo-accent">Net</tspan></text>
+      <text x="116" y="63" font-family="'DM Sans', sans-serif" font-size="10.5" font-weight="300" letter-spacing="1.5" class="logo-sub">SOPORTE · REDES · EQUIPOS · WEB</text>
     </svg>
   </a>
-  <ul>
+  <ul class="nav-links">
     <li><a href="#work">Work</a></li>
     <li><a href="#lab">Lab</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#now">Now</a></li>
     <li><a href="#contacto">Contact</a></li>
   </ul>
-  <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
-    <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema" aria-pressed="false">
+    <svg id="iconSun" class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
     </svg>
-    <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg id="iconMoon" class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
     </svg>
   </button>
 </nav>
 
+<main>
 <header class="hero">
-  <h1 class="hero-title">
-    <span class="line">Claudio</span>
-    <span class="line line-accent">Torres</span>
-  </h1>
+  <p class="hero-kicker">ClauNet</p>
+  <h1 class="hero-title">Claudio Torres</h1>
+
   <p class="manifesto">
     <span class="line">Diseño.</span>
     <span class="line">Tecnología.</span>
     <span class="line line-accent">Ideas.</span>
   </p>
+
   <p class="quote">&ldquo;A place for things I build.&rdquo;</p>
-  <a class="cta-link" href="#work">TRABAJOS <span class="cta-arrow" aria-hidden="true">↓</span></a>
+  <p class="hero-lede">Diseño y construyo sitios web, aplicaciones y experimentos digitales desde Cañete, Chile.</p>
+
+  <div class="hero-foot">
+    <ul class="meta-rail">
+      <li>Cañete / Chile</li>
+      <li>2026</li>
+      <li>Digital studio</li>
+    </ul>
+    <a class="cta-link" href="#work">Ver trabajos <span class="cta-arrow" aria-hidden="true">↓</span></a>
+  </div>
 </header>
 
-<section class="work" id="work">
-  <p class="section-label reveal">// work</p>
+<!-- ============================================================
+     WORK — presentación editorial de los proyectos reales.
+     ✏️ AÑO: no se muestra ninguna fecha todavía. Cuando exista el
+     dato real, descomenta el bloque .work-year de cada proyecto.
+     ============================================================ -->
+<section class="work" id="work" aria-labelledby="work-title">
+  <div class="section-head">
+    <p class="section-label">// work</p>
+    <h2 class="section-title" id="work-title">Selected work</h2>
+    <p class="section-sub">Una selección de proyectos web para clientes y organizaciones.</p>
+  </div>
 
   <div class="work-list">
-    <a class="work-item reveal" href="https://mardanza.vercel.app/" target="_blank" rel="noopener">
-      <span class="work-num">01</span>
-      <span class="work-body">
-        <span class="work-name">Mardanza</span>
-        <span class="work-meta">Centro Cultural Mardanza · Cañete</span>
-        <span class="work-desc">Danza, teatro y cultura. Next.js + Tailwind + Sanity.</span>
-      </span>
-      <span class="work-link">→ mardanza.vercel.app</span>
-      <span class="work-preview"><img src="previews/mardanza.jpg" alt="Mardanza" loading="lazy"></span>
+
+    <a class="work-entry reveal" href="https://mardanza.vercel.app/" target="_blank" rel="noopener">
+      <div class="work-body">
+        <p class="work-num">01</p>
+        <h3 class="work-name">Mardanza</h3>
+        <p class="work-context">Centro Cultural Mardanza · Cañete, Chile</p>
+        <p class="work-desc">Danza, teatro y cultura.</p>
+        <p class="work-facts">
+          <span>Web design / development</span>
+          <span>Next.js · Tailwind · Sanity</span>
+        </p>
+        <p class="work-url">→ mardanza.vercel.app<span class="sr-only"> (abre en una nueva pestaña)</span></p>
+        <!-- ✏️ AÑO PENDIENTE <p class="work-year">20XX</p> -->
+      </div>
+      <figure class="work-media">
+        <img src="previews/mardanza.jpg" alt="Vista del sitio del Centro Cultural Mardanza" width="1200" height="557" loading="lazy" decoding="async">
+      </figure>
     </a>
 
-    <a class="work-item reveal" href="https://endorfitness.cl" target="_blank" rel="noopener">
-      <span class="work-num">02</span>
-      <span class="work-body">
-        <span class="work-name">Endorfitness</span>
-        <span class="work-meta">Estudio de entrenamiento funcional y artes marciales · Cañete</span>
-        <span class="work-desc">Sitio + panel de administración (Vitalife Admin). Next.js + React + Supabase.</span>
-      </span>
-      <span class="work-link">→ endorfitness.cl</span>
-      <span class="work-preview"><img src="previews/endorfitness.jpg" alt="Endorfitness" loading="lazy"></span>
+    <a class="work-entry reveal" href="https://endorfitness.cl" target="_blank" rel="noopener" style="--reveal-delay:0.05s">
+      <div class="work-body">
+        <p class="work-num">02</p>
+        <h3 class="work-name">Endorfitness</h3>
+        <p class="work-context">Estudio de entrenamiento funcional y artes marciales · Cañete, Chile</p>
+        <p class="work-desc">Sitio público y panel de administración.</p>
+        <p class="work-facts">
+          <span>Sitio + administración</span>
+          <span>Next.js · React · Supabase</span>
+        </p>
+        <p class="work-url">→ endorfitness.cl<span class="sr-only"> (abre en una nueva pestaña)</span></p>
+        <!-- ✏️ AÑO PENDIENTE <p class="work-year">20XX</p> -->
+      </div>
+      <figure class="work-media">
+        <img src="previews/endorfitness.jpg" alt="Vista del sitio de Endorfitness" width="1200" height="642" loading="lazy" decoding="async">
+      </figure>
     </a>
 
-    <a class="work-item reveal" href="https://servifosasnahuelbuta.cl" target="_blank" rel="noopener">
-      <span class="work-num">03</span>
-      <span class="work-body">
-        <span class="work-name">Servifosas Nahuelbuta</span>
-        <span class="work-meta">Servicios de saneamiento · Cañete</span>
-        <span class="work-desc">Landing institucional.</span>
-      </span>
-      <span class="work-link">→ servifosasnahuelbuta.cl</span>
-      <span class="work-preview"><img src="previews/servifosas.jpg" alt="Servifosas Nahuelbuta" loading="lazy"></span>
+    <a class="work-entry reveal" href="https://servifosasnahuelbuta.cl" target="_blank" rel="noopener" style="--reveal-delay:0.1s">
+      <div class="work-body">
+        <p class="work-num">03</p>
+        <h3 class="work-name">Servifosas Nahuelbuta</h3>
+        <p class="work-context">Servicios de saneamiento · Cañete, Chile</p>
+        <p class="work-desc">Landing institucional.</p>
+        <p class="work-facts">
+          <span>Landing institucional</span>
+        </p>
+        <p class="work-url">→ servifosasnahuelbuta.cl<span class="sr-only"> (abre en una nueva pestaña)</span></p>
+        <!-- ✏️ AÑO PENDIENTE <p class="work-year">20XX</p> -->
+      </div>
+      <figure class="work-media">
+        <img src="previews/servifosas.jpg" alt="Vista del sitio de Servifosas Nahuelbuta" width="1910" height="837" loading="lazy" decoding="async">
+      </figure>
     </a>
 
-    <a class="work-item reveal" href="https://ugs13.fr" target="_blank" rel="noopener">
-      <span class="work-num">04</span>
-      <span class="work-body">
-        <span class="work-name">UGS Marseille</span>
-        <span class="work-meta">Union des Guides Solidaires · Marsella, Francia</span>
-        <span class="work-desc">Plataforma multilingüe para guías turísticos. Next.js + Supabase.</span>
-      </span>
-      <span class="work-link">→ ugs13.fr</span>
-      <span class="work-preview"><img src="previews/ugs.jpg" alt="UGS Marseille" loading="lazy"></span>
+    <a class="work-entry reveal" href="https://ugs13.fr" target="_blank" rel="noopener" style="--reveal-delay:0.15s">
+      <div class="work-body">
+        <p class="work-num">04</p>
+        <h3 class="work-name">UGS Marseille</h3>
+        <p class="work-context">Union des Guides Solidaires · Marsella, Francia</p>
+        <p class="work-desc">Plataforma multilingüe para guías turísticos.</p>
+        <p class="work-facts">
+          <span>Plataforma multilingüe</span>
+          <span>Next.js · Supabase</span>
+        </p>
+        <p class="work-url">→ ugs13.fr<span class="sr-only"> (abre en una nueva pestaña)</span></p>
+        <!-- ✏️ AÑO PENDIENTE <p class="work-year">20XX</p> -->
+      </div>
+      <figure class="work-media">
+        <img src="previews/ugs.jpg" alt="Vista de la plataforma de UGS Marseille" width="1200" height="559" loading="lazy" decoding="async">
+      </figure>
     </a>
 
-    <a class="work-item reveal" href="https://marcia-jara-danza.vercel.app/" target="_blank" rel="noopener">
-      <span class="work-num">05</span>
-      <span class="work-body">
-        <span class="work-name">Escuela de Flamenco Marcia Jara</span>
-        <span class="work-meta">Escuela de danza flamenca · Temuco</span>
-        <span class="work-desc">Sitio institucional.</span>
-      </span>
-      <span class="work-link">→ marcia-jara-danza.vercel.app</span>
-      <span class="work-preview"><img src="previews/marcia-jara.jpg" alt="Escuela de Flamenco Marcia Jara" loading="lazy"></span>
+    <a class="work-entry reveal" href="https://marcia-jara-danza.vercel.app/" target="_blank" rel="noopener" style="--reveal-delay:0.2s">
+      <div class="work-body">
+        <p class="work-num">05</p>
+        <h3 class="work-name">Escuela de Flamenco Marcia Jara</h3>
+        <p class="work-context">Escuela de danza flamenca · Temuco, Chile</p>
+        <p class="work-desc">Sitio institucional.</p>
+        <p class="work-facts">
+          <span>Sitio institucional</span>
+        </p>
+        <p class="work-url">→ marcia-jara-danza.vercel.app<span class="sr-only"> (abre en una nueva pestaña)</span></p>
+        <!-- ✏️ AÑO PENDIENTE <p class="work-year">20XX</p> -->
+      </div>
+      <figure class="work-media">
+        <img src="previews/marcia-jara.jpg" alt="Vista del sitio de la Escuela de Flamenco Marcia Jara" width="1200" height="547" loading="lazy" decoding="async">
+      </figure>
     </a>
+
   </div>
 
-  <a class="work-all reveal" href="trabajos.html">Ver todos los proyectos ↗</a>
+  <a class="work-all" href="trabajos.html">Ver todos los proyectos ↗</a>
 </section>
 
-<section class="lab reveal" id="lab">
-  <p class="section-label">// lab</p>
-  <p class="lab-intro">Actualmente en desarrollo — en construcción constante.</p>
+<!-- ============================================================
+     LAB — experimentos y cosas en construcción.
+     Solo información real (hoy: UGS Marseille y Mardanza).
+     ✏️ EDITAR AQUÍ: para añadir un experimento, duplica un
+     <article class="lab-entry"> completo, sube el número y
+     rellena nombre, categoría, estado y descripción.
+     ✏️ FECHA: añade <p class="lab-date">20XX</p> dentro del
+     <article> cuando exista el dato real.
+     ============================================================ -->
+<section class="lab" id="lab" aria-labelledby="lab-title">
+  <div class="section-head">
+    <p class="section-label">// lab</p>
+    <h2 class="section-title" id="lab-title">Lab</h2>
+    <p class="section-sub">Experimentos. Ideas. Pruebas. Cosas que probablemente nunca termine.</p>
+  </div>
+
+  <p class="lab-note">Actualmente en desarrollo — en construcción constante.</p>
 
   <div class="lab-list">
-    <div class="lab-item">
-      <p class="lab-name"><span class="lab-dash">—</span> UGS Marseille</p>
+    <article class="lab-entry reveal">
+      <div class="lab-head">
+        <p class="lab-num">01</p>
+        <h3 class="lab-name">UGS Marseille</h3>
+        <p class="status-pill"><span class="status-dot" aria-hidden="true"></span>In progress</p>
+      </div>
+      <p class="lab-cat">Plataforma multilingüe · Marsella</p>
       <p class="lab-desc">El proyecto más grande de ClauNet hasta ahora. Plataforma para la asociación de guías turísticos de Marsella, en mejora continua (nuevas funciones, idiomas, contenido).</p>
-    </div>
-    <div class="lab-item">
-      <p class="lab-name"><span class="lab-dash">—</span> Mardanza</p>
+    </article>
+
+    <article class="lab-entry reveal" style="--reveal-delay:0.06s">
+      <div class="lab-head">
+        <p class="lab-num">02</p>
+        <h3 class="lab-name">Mardanza</h3>
+        <p class="status-pill"><span class="status-dot" aria-hidden="true"></span>In progress</p>
+      </div>
+      <p class="lab-cat">Sitio / cultura · Cañete</p>
       <p class="lab-desc">Sitio del Centro Cultural Mardanza en Cañete, en expansión constante (nuevas secciones, contenido, funcionalidades).</p>
-    </div>
+    </article>
   </div>
 </section>
 
-<section class="contact" id="contacto">
-  <p class="section-label reveal">// contact</p>
-  <h2 class="contact-title reveal">¿Tienes algo<br>interesante en mente?</h2>
+<section class="about" id="about" aria-labelledby="about-title">
+  <div class="section-head">
+    <p class="section-label">// about</p>
+    <h2 class="section-title" id="about-title">Sobre mí</h2>
+  </div>
+
+  <div class="about-body reveal">
+    <p class="about-lede">Soy Claudio, de Cañete, Chile.</p>
+    <p>Me gusta diseñar y construir cosas en la intersección entre tecnología, diseño y curiosidad.</p>
+    <p>Algunos proyectos empiezan como una idea pequeña y terminan convertidos en aplicaciones completas. Otros solo sirven para aprender algo nuevo.</p>
+    <p>ClauNet es el lugar donde guardo todo esto.</p>
+    <p class="about-close">Trabajo desde Cañete. Algunos proyectos viajan más lejos.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     NOW — qué está pasando hoy. Solo información respaldada por
+     el contenido del sitio (UGS Marseille y Mardanza).
+     ✏️ EDITAR AQUÍ: añade un <li> por cada cosa en curso.
+     ✏️ ÚLTIMA ACTUALIZACIÓN: .now-updated (abajo) refleja esta
+     fecha; actualízala al cambiar la lista de items.
+     ============================================================ -->
+<section class="now" id="now" aria-labelledby="now-title">
+  <div class="section-head">
+    <p class="section-label">// now</p>
+    <h2 class="section-title" id="now-title">Now</h2>
+    <p class="section-sub">Actualmente construyendo, experimentando y aprendiendo.</p>
+  </div>
+
+  <ul class="now-list reveal">
+    <li><span class="now-arrow" aria-hidden="true">→</span><span><strong>UGS Marseille</strong> — en mejora continua: nuevas funciones, idiomas y contenido.</span></li>
+    <li><span class="now-arrow" aria-hidden="true">→</span><span><strong>Mardanza</strong> — en expansión: nuevas secciones, contenido y funcionalidades.</span></li>
+    <!-- ✏️ EDITAR AQUÍ — plantilla para nuevos items:
+         <li><span class="now-arrow" aria-hidden="true">→</span><span><strong>Nombre</strong> — qué está pasando.</span></li>
+    -->
+  </ul>
+
+  <p class="now-updated">Last updated · sep 2026</p>
+</section>
+
+<section class="contact" id="contacto" aria-labelledby="contact-title">
+  <div class="section-head">
+    <p class="section-label">// contact</p>
+    <h2 class="contact-title" id="contact-title">Let&rsquo;s build something</h2>
+    <p class="section-sub">¿Tienes una idea? Hablemos.</p>
+  </div>
+
   <div class="contact-list reveal">
     <a class="contact-row" href="mailto:contacto@claunet.cl">
-      <span class="contact-key">EMAIL</span>
+      <span class="contact-key">Email</span>
       <span class="contact-val">contacto@claunet.cl</span>
     </a>
     <a class="contact-row" href="https://wa.me/56982540503" target="_blank" rel="noopener">
-      <span class="contact-key">WHATSAPP</span>
-      <span class="contact-val">+56 9 8254 0503</span>
+      <span class="contact-key">WhatsApp</span>
+      <span class="contact-val">+56 9 8254 0503<span class="sr-only"> (abre en una nueva pestaña)</span></span>
     </a>
   </div>
 </section>
+</main>
 
 <footer class="site-footer">
   <p class="footer-brand">ClauNet</p>
@@ -164,7 +340,10 @@
     <ul class="footer-links">
       <li><a href="#work">Work</a></li>
       <li><a href="#lab">Lab</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#now">Now</a></li>
       <li><a href="#contacto">Contact</a></li>
+      <li><a href="https://wa.me/56982540503" target="_blank" rel="noopener">WhatsApp</a></li>
       <li><a href="politica-de-privacidad.html">Privacidad</a></li>
     </ul>
     <div class="footer-socials">
@@ -178,43 +357,7 @@
   </div>
 </footer>
 
-<script>
-  const toggle = document.getElementById('themeToggle');
-  const iconSun = document.getElementById('iconSun');
-  const iconMoon = document.getElementById('iconMoon');
-
-  const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const isDark = saved ? saved === 'dark' : prefersDark;
-
-  function applyTheme(dark) {
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    iconSun.style.display = dark ? 'block' : 'none';
-    iconMoon.style.display = dark ? 'none' : 'block';
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
-  }
-
-  applyTheme(isDark);
-
-  toggle.addEventListener('click', () => {
-    const currentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    applyTheme(!currentlyDark);
-  });
-</script>
-<script>
-  document.documentElement.classList.add('js');
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
-  }
-</script>
+<script src="site.js" defer></script>
 <script src="cookie-consent.js"></script>
 </body>
 </html>
