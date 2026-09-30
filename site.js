@@ -90,86 +90,113 @@
   }
 
   /* ---------- 5. Radio flotante — easter egg ----------
-     Acid Flashback Radio colgando de la esquina. El stream solo se
-     pide después de un clic (el <audio> usa preload="none"), así que
-     nada suena al cargar. El estado visual lo dictan los eventos
-     reales del <audio> —playing/pause/error— y no el clic: la placa
-     nunca dice algo distinto de lo que se oye. Si el stream falla
-     (red, formato, CORS), la placa lo avisa y el sitio sigue igual. */
+     Acid Flashback vive fuera de ClauNet: la placa es un <a> (ya en el
+     HTML) que apunta al reproductor oficial de InternetFM, el único
+     que puede pedir el stream —la CSP de este sitio solo permite medios
+     same-origin, y no se toca—. El JS añade dos cosas, nada más: una
+     ventana compacta y reutilizable, y un estado honesto («abriendo
+     radio…» → «↗ radio externa»). Si el navegador bloquea la ventana,
+     el enlace abre su pestaña y aquí no se finge nada: la placa nunca
+     afirma que el audio suene dentro del sitio. */
   var radioHang = document.querySelector('.radio-hang');
-  var radioToggle = document.getElementById('radioToggle');
-  var radioStream = document.getElementById('afrStream');
+  var radioLink = document.getElementById('radioOpen');
 
-  if (radioHang && radioToggle && radioStream) {
-    var radioNow = 'idle';
+  if (radioHang && radioLink) {
+    var RADIO_VENTANA = 'acidFlashbackPlayer';
+    var RADIO_ANCHO = 420;      /* el ancho para el que está hecho el */
+    var RADIO_ALTO = 360;       /* reproductor oficial de InternetFM */
+    var RADIO_AVISO = 1200;     /* lo que dura «abriendo radio…», en ms */
+
     var radioTimer = null;
-    var radioFailed = false;
 
     var radioState = function (state) {
-      radioNow = state;
-      radioHang.classList.toggle('is-loading', state === 'loading');
-      radioHang.classList.toggle('is-live', state === 'live');
+      radioHang.classList.toggle('is-opening', state === 'opening');
+      radioHang.classList.toggle('is-away', state === 'away');
       radioHang.classList.toggle('is-error', state === 'error');
-      radioToggle.setAttribute('aria-pressed', state === 'live' ? 'true' : 'false');
-      radioToggle.setAttribute('aria-label',
-        state === 'live' ? 'Pausar Acid Flashback Radio'
-          : state === 'loading' ? 'Conectando con Acid Flashback Radio'
-            : state === 'error' ? 'Reintentar Acid Flashback Radio'
-              : 'Reproducir Acid Flashback Radio');
     };
 
     var radioClear = function () {
       if (radioTimer) { clearTimeout(radioTimer); radioTimer = null; }
     };
 
-    var radioFail = function () {
+    /* abrir dura un parpadeo, y el aviso se queda el tiempo justo para
+       poder leerlo antes de pasar a «radio externa». No se adivina si
+       la ventana sigue viva —«closed» miente en cuanto el player es
+       cross-origin—: si abrió, abrió */
+    var radioNotice = function () {
       radioClear();
-      radioFailed = true;
-      radioState('error');
+      radioState('opening');
+      radioTimer = setTimeout(function () {
+        radioTimer = null;
+        radioState('away');
+      }, RADIO_AVISO);
     };
 
-    radioStream.addEventListener('playing', function () {
-      radioClear();
-      radioFailed = false;
-      radioState('live');
-    });
+    /* ventana propia, pequeña y reutilizable: si el player ya está
+       abierto, «window.open('')» devuelve esa misma ventana y solo hay
+       que traerla al frente —recargarla cortaría la radio—. Devuelve
+       «bloqueada» si el navegador no la deja abrir (manda el enlace) o
+       «error» si la abrió y no pudo cargar el player. Va sin
+       «noopener» a propósito: sin la referencia no se puede saber si
+       abrió ni reenfocarla; el fallback por enlace sí lo lleva. */
+    var radioPopup = function () {
+      var centrado = 'left=' + Math.max(0, Math.round((screen.availWidth - RADIO_ANCHO) / 2)) +
+        ',top=' + Math.max(0, Math.round((screen.availHeight - RADIO_ALTO) / 2));
+      var win = null;
 
-    /* solo se vuelve a «detenido» si de verdad estaba sonando o
-       conectando: así un pause rezagado no pisa el aviso de error */
-    radioStream.addEventListener('pause', function () {
-      if (radioNow === 'live' || radioNow === 'loading') {
-        radioClear();
-        radioState('idle');
+      try {
+        /* abrir en blanco y navegar después permite reusar una ventana
+           que ya exista con este nombre sin recargar el player */
+        win = window.open('', RADIO_VENTANA, 'popup=yes,width=' + RADIO_ANCHO +
+          ',height=' + RADIO_ALTO + ',' + centrado + ',resizable=yes,scrollbars=yes');
+      } catch (err) { win = null; }
+
+      if (!win) { return 'bloqueada'; }
+
+      var cargado = false;
+      try { cargado = win.location.href !== 'about:blank'; }
+      catch (err) { cargado = true; }   /* cross-origin: ya está el player */
+
+      if (!cargado) {
+        try {
+          win.location.replace(radioLink.href);
+        } catch (err) {
+          if (typeof win.close === 'function') { win.close(); }
+          return 'error';
+        }
       }
-    });
 
-    radioStream.addEventListener('error', radioFail);
+      try { win.focus(); } catch (err) { /* sin foco: no es grave */ }
+      return 'abierta';
+    };
 
-    radioToggle.addEventListener('click', function () {
-      if (!radioStream.paused) {
-        radioStream.pause();
-        /* un stream en vivo no se reanuda donde quedó: se reconecta */
-        if (typeof radioStream.load === 'function') { radioStream.load(); }
-        radioClear();
-        radioState('idle');
-        return;
+    radioLink.addEventListener('click', function (e) {
+      /* clic normal: aquí decidimos nosotros. Teclado (detail 0) y
+         clics con modificadores se dejan intactos: los maneja el
+         navegador, que sabe si toca pestaña, ventana o descarga */
+      var simple = e.button === 0 && e.detail > 0 &&
+        !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+      if (simple) {
+        var resultado = radioPopup();
+
+        if (resultado === 'abierta') {
+          e.preventDefault();
+          radioNotice();
+          return;
+        }
+
+        if (resultado === 'error') {
+          e.preventDefault();
+          radioClear();
+          radioState('error');
+          return;
+        }
       }
 
-      /* tras un error el <audio> queda en estado terminal: hay que
-         recargarlo antes de reintentar */
-      if (radioFailed) {
-        radioFailed = false;
-        if (typeof radioStream.load === 'function') { radioStream.load(); }
-      }
-
-      radioState('loading');
-      radioClear();
-      radioTimer = setTimeout(radioFail, 8000);
-
-      var attempt = radioStream.play();
-      if (attempt && typeof attempt.catch === 'function') {
-        attempt.catch(radioFail);
-      }
+      /* ventana bloqueada, teclado o modificadores: el enlace abre su
+         pestaña y la placa solo refleja el estado */
+      radioNotice();
     });
   }
 })();

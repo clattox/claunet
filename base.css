@@ -429,8 +429,12 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    Acid Flashback Radio no se presenta como reproductor: es una placa
    pequeña colgada del borde inferior del nav, arriba a la derecha
    (el WhatsApp vive abajo, así nunca se cruzan). Reutiliza el idioma
-   de .wa-float —borde de 1px, radio 2px, mono para la etiqueta— y el
-   audio solo suena después de un clic: el play lo dispara site.js. */
+   de .wa-float —borde de 1px, radio 2px, mono para la etiqueta—, y es
+   un enlace: el clic abre el reproductor oficial de InternetFM en su
+   propia ventana. Ningún audio sale de este sitio —la CSP de Vercel
+   solo permite medios same-origin, y no se toca—, así que la placa
+   nunca dice «sonando»: dice lo que hace (abrir) y dónde vive la
+   radio (fuera). */
 .radio-hang {
   position: fixed;
   top: 0;
@@ -454,19 +458,12 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   opacity: 0.35;
 }
 
-/* el <audio> no dibuja nada: 0×0 en lugar de display:none para no
-   alterar nunca la reproducción */
-.radio-hang audio {
-  display: block;
-  width: 0;
-  height: 0;
-}
-
-/* sin JS no hay reproducción posible: se retira, igual que el toggle
-   de tema (html:not(.js) .theme-toggle) */
-html:not(.js) .radio-hang { display: none; }
+/* aquí no hay <audio>: sin JS la placa sigue sirviendo, porque es un
+   <a> al reproductor oficial y el navegador lo abre solo. Con JS solo
+   se añade la ventana compacta y el aviso de estado. */
 
 .radio-plate {
+  position: relative;        /* ancla el «↗» de la esquina */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -476,6 +473,11 @@ html:not(.js) .radio-hang { display: none; }
   border-radius: 2px;
   background: var(--bg);
   color: var(--text);
+  text-decoration: none;     /* es un <a>, no un <button> */
+  /* sin esto el <a> hereda el line-height 1.6 del body y la placa
+     crece 6px: el <button> traía «normal» del navegador y esa caja
+     es la que se conserva */
+  line-height: normal;
   font-family: var(--font-mono);
   text-align: left;
   cursor: pointer;
@@ -499,11 +501,10 @@ html:not(.js) .radio-hang { display: none; }
   white-space: nowrap;
 }
 
-.radio-plate__title--live,
-.radio-plate__title--loading,
+.radio-plate__title--opening,
 .radio-plate__title--error { display: none; }
 
-/* el aviso de caída es una frase: se parte en dos líneas antes que
+/* el fallo al abrir es una frase: se parte en dos líneas antes que
    ensanchar la placa */
 .radio-plate__title--error {
   max-width: 9.5rem;
@@ -524,6 +525,27 @@ html:not(.js) .radio-hang { display: none; }
   text-transform: uppercase;
   color: var(--muted);
 }
+
+/* «↗» de la esquina: presente desde el reposo —muy tenue— para que el
+   clic no prometa algo que no es. Se apaga cuando el texto de estado ya
+   dice que la radio está fuera, y no ocupa espacio: la placa mide
+   exactamente lo mismo que antes */
+.radio-plate__ext {
+  position: absolute;
+  top: 0.28rem;
+  right: 0.38rem;
+  font-size: 0.5rem;
+  line-height: 1;
+  opacity: 0.45;
+  transition: opacity 0.25s var(--ease);
+}
+
+.radio-hang.is-opening .radio-plate__ext,
+.radio-hang.is-away .radio-plate__ext { opacity: 0; }
+
+/* segunda línea: una sola frase visible, igual que el título */
+.radio-plate__station--opening,
+.radio-plate__station--away { display: none; }
 
 /* ecualizador: barras planas = detenido, barras llenas = sonando.
    El alto de la barra —no el color— comunica el estado; por eso al
@@ -558,33 +580,36 @@ html:not(.js) .radio-hang { display: none; }
   50%      { transform: rotate(-0.25deg); }
 }
 
-.radio-hang.is-loading .radio-plate__title--loading,
-.radio-hang.is-live .radio-plate__title--live,
+.radio-hang.is-opening .radio-plate__title--opening,
+.radio-hang.is-away .radio-plate__title--opening,
 .radio-hang.is-error .radio-plate__title--error { display: inline; }
 
-.radio-hang.is-loading .radio-plate__title--idle,
-.radio-hang.is-live .radio-plate__title--idle,
+.radio-hang.is-opening .radio-plate__title--idle,
+.radio-hang.is-away .radio-plate__title--idle,
 .radio-hang.is-error .radio-plate__title--idle { display: none; }
 
-/* conectando: sin animación, solo las barras a media asta */
-.radio-hang.is-loading .radio-plate__bar {
-  opacity: 0.5;
-  transform: scaleY(0.45);
-}
+.radio-hang.is-opening .radio-plate__station--opening,
+.radio-hang.is-away .radio-plate__station--away { display: inline; }
 
-.radio-hang.is-live .radio-plate__bar {
+.radio-hang.is-opening .radio-plate__station--idle,
+.radio-hang.is-away .radio-plate__station--idle { display: none; }
+
+/* abriendo: las barras pulsan mientras la ventana carga el player.
+   Es lo único que se mueve, y dura lo que dura el aviso */
+.radio-hang.is-opening .radio-plate__bar {
   opacity: 1;
   transform: scaleY(1);
   animation: radio-eq 1.05s ease-in-out infinite;
 }
 
-.radio-hang.is-live .radio-plate__bar:nth-child(2) { animation-duration: 0.8s; }
-.radio-hang.is-live .radio-plate__bar:nth-child(3) { animation-duration: 1.35s; }
+.radio-hang.is-opening .radio-plate__bar:nth-child(2) { animation-duration: 0.8s; }
+.radio-hang.is-opening .radio-plate__bar:nth-child(3) { animation-duration: 1.35s; }
 
-/* sonando la placa se mece un poco más rápido */
-.radio-hang.is-live { animation-duration: 7s; }
+/* mientras abre, la placa se mece un poco más rápido. En reposo y en
+   «radio externa» las barras quedan planas: aquí no suena nada */
+.radio-hang.is-opening { animation-duration: 7s; }
 
-/* caída del stream: borde discontinuo, como etiqueta descolgada */
+/* no se pudo abrir: borde discontinuo, como etiqueta descolgada */
 .radio-hang.is-error .radio-plate { border-style: dashed; }
 
 .radio-plate:active { transform: translateY(2px); }

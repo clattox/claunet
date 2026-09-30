@@ -228,23 +228,31 @@
 </footer>
 
 <!-- Radio flotante — placa colgante, easter egg de ClauNet.
-     Arranca detenida: el clic es lo único que hace sonar el stream. -->
+     No reproduce audio aquí: la CSP de este sitio no permite medios
+     cross-origin, así que el clic abre el reproductor oficial de
+     InternetFM en su propia ventana (href = el mismo reproductor que
+     internetfm.com embebe en /music/acid-flashback/, con el stream
+     como parámetro; no envía X-Frame-Options ni CSP). -->
 <div class="radio-hang">
-  <button class="radio-plate" id="radioToggle" type="button" aria-label="Reproducir Acid Flashback Radio" aria-pressed="false">
+  <a class="radio-plate" id="radioOpen"
+     href="https://internetfm.com/ifm-radio/ifm-player.html?stream=https%3A%2F%2Fcanada1.reliastream.com%2Fproxy%2Fafr%3Fmp%3D%2Fstream&amp;name=Acid+Flashback+Radio&amp;logo=https%3A%2F%2Finternetfm.com%2Fwp-content%2Fuploads%2Fstation-logos%2FAFR.png&amp;meta=https%3A%2F%2Fcanada1.reliastream.com%2Fproxy%2Fafr%2Fcurrentsong%3Fsid%3D1"
+     target="_blank" rel="noopener external"
+     aria-label="Escuchar Acid Flashback Radio en su reproductor oficial (se abre en una ventana nueva)">
+    <span class="radio-plate__ext" aria-hidden="true">↗</span>
     <span class="radio-plate__title radio-plate__title--idle">¿Mucho silencio?</span>
-    <span class="radio-plate__title radio-plate__title--loading">♪ Conectando…</span>
-    <span class="radio-plate__title radio-plate__title--live">♪ Sonando ahora</span>
-    <span class="radio-plate__title radio-plate__title--error">La radio no está disponible ahora</span>
+    <span class="radio-plate__title radio-plate__title--opening">♪ Acid Flashback</span>
+    <span class="radio-plate__title radio-plate__title--error">El reproductor no se pudo abrir</span>
     <span class="radio-plate__meta">
       <span class="radio-plate__eq" aria-hidden="true">
         <span class="radio-plate__bar"></span>
         <span class="radio-plate__bar"></span>
         <span class="radio-plate__bar"></span>
       </span>
-      <span class="radio-plate__station">♪ Acid Flashback Radio</span>
+      <span class="radio-plate__station radio-plate__station--idle">♪ Acid Flashback Radio</span>
+      <span class="radio-plate__station radio-plate__station--opening">Abriendo radio…</span>
+      <span class="radio-plate__station radio-plate__station--away">↗ Radio externa</span>
     </span>
-  </button>
-  <audio id="afrStream" preload="none" src="https://canada1.reliastream.com/proxy/afr?mp=/stream"></audio>
+  </a>
 </div>
 
 <!-- WhatsApp flotante — mismo lenguaje visual que el resto del sitio -->
