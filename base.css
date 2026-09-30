@@ -455,7 +455,26 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    solo permite medios same-origin, y no se toca—, así que la nube
    nunca dice «sonando»: dice lo que hace (abrir) y dónde vive la
    radio (fuera). */
+/* Las medidas del cordel, juntas y con nombre:
+     --cord-tapa  lo que el nav —opaco— tapa por arriba. Reproduce el
+                  alto real de la barra (una fila en escritorio, dos en
+                  móvil), no --nav-h, que además gobierna el
+                  scroll-margin-top de las anclas y no se toca
+     --cord-vivo  el tramo que queda a la vista, entre el nav y la nube
+     --loma       lo que la silueta asoma por encima de su propia caja
+                  (el inset negativo del <svg>: si cambia, cambia aquí)
+     --junta      lo que el cordel se mete dentro de la nube: la placa
+                  sube lo mismo —margen negativo— y la nube no se mueve,
+                  pero la unión aguanta el 2px que baja al pulsarla
+   La suma es el largo del cordel, y el clavo sigue estando arriba,
+   fuera de la vista: el borde superior del viewport, detrás del nav.
+   Cuerda y nube cuelgan del mismo punto —el contenedor rota entero—
+   así que el balanceo no puede descoserlas. */
 .radio-hang {
+  --cord-tapa: 82px;
+  --cord-vivo: 55px;
+  --loma: 6px;
+  --junta: 2px;
   position: fixed;
   top: 0;
   right: clamp(0.9rem, 3vw, 1.9rem);
@@ -469,11 +488,14 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
 
 /* cordel: arranca en el borde superior del viewport y el nav —opaco—
    lo tapa hasta su línea inferior, así la nube parece colgar de la
-   barra y el punto de anclaje nunca queda a la vista */
+   barra y el punto de anclaje nunca queda a la vista. Termina en la
+   cúspide central de la silueta y --junta píxeles más adentro, que
+   la nube va delante y tapa la unión: ni asoma por debajo ni se
+   queda corto */
 .radio-hang::before {
   content: '';
   width: 1px;
-  height: calc(var(--nav-h) + 1.15rem);
+  height: calc(var(--cord-tapa) + var(--cord-vivo) + var(--loma) + var(--junta));
   background: var(--muted);
   opacity: 0.35;
 }
@@ -484,6 +506,9 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
 
 .radio-plate {
   position: relative;        /* ancla el «↗» de la esquina */
+  /* la placa sube lo que el cordel se mete en la nube (--junta): el
+     largo extra de arriba no mueve la nube ni un píxel */
+  margin-top: calc(-1 * var(--junta));
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -650,10 +675,32 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   50%      { transform: scaleY(1); }
 }
 
-/* colgado: oscilación apenas perceptible sobre el clavo */
+/* colgado en reposo: oscilación apenas perceptible sobre el clavo, y
+   centrada en 0 —el cartel cuelga vertical—, para que el reposo no esté
+   torcido y el impulso del cursor pueda empezar y acabar justo aquí */
 @keyframes radio-swing {
-  0%, 100% { transform: rotate(-1.1deg); }
-  50%      { transform: rotate(-0.25deg); }
+  0%, 100% { transform: rotate(0.6deg); }
+  50%      { transform: rotate(-0.6deg); }
+}
+
+/* el golpe del cursor sobre la nube: un empujón y cinco excursiones que
+   se apagan —≈3 oscilaciones en 2.25s, un periodo de ~0.8s, lo que
+   tarda en cruzar un péndulo del largo de este cordel—. Amplitud de
+   2.3deg al principio y menos de medio grado al final: frena solo.
+   No es un bucle: corre una vez y se queda quieto a 0.6deg, que es
+   exactamente donde arranca radio-swing, así que al retirar el cursor
+   el reposo entra sin salto. El primer tramo va con ease out —el
+   empujón: arranca con energía y llega frenando al primer extremo—;
+   el resto hereda el ease-in-out de la regla, que frena en cada
+   extremo, como un péndulo de verdad */
+@keyframes radio-impulso {
+  0%    { transform: rotate(0deg); animation-timing-function: cubic-bezier(0, 0, 0.58, 1); }
+  18.2% { transform: rotate(-2.3deg); }
+  36.4% { transform: rotate(1.52deg); }
+  54.7% { transform: rotate(-1deg); }
+  72.9% { transform: rotate(0.66deg); }
+  91.1% { transform: rotate(-0.44deg); }
+  100%  { transform: rotate(0.6deg); }
 }
 
 .radio-hang.is-opening .radio-plate__title--opening,
@@ -698,7 +745,18 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
 .radio-plate:focus-visible { outline-offset: 9px; }
 
 @media (hover: hover) and (pointer: fine) {
-  .radio-plate:hover { transform: translateY(1px); }
+  /* el cursor entra en la nube: el cartel entero —cordel y nube son la
+     misma pieza, giran desde el mismo clavo— recibe el empujón y se
+     asienta. Una sola vez, y mientras el cursor siga encima ya no se
+     mueve más: es un golpe, no un bucle. Al salir, radio-swing retoma
+     desde donde el impulso lo dejó. Solo con puntero fino: en táctil
+     no hay cursor que empuje nada.
+     Y la nube ya no baja 1px al pasar por encima, como antes: ahora
+     que el cordel se ve, cualquier movimiento de la nube sin el cordel
+     rompería la pieza. El trazo y la sombra siguen avisando del hover */
+  .radio-hang:has(.radio-plate:hover) {
+    animation: radio-impulso 2.25s ease-in-out 1 forwards;
+  }
 
   .radio-plate:hover .radio-plate__cloud-path { stroke: var(--accent2); }
 
@@ -713,10 +771,9 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   }
 }
 
-/* tablet: placa algo más corta, cordel algo más corto */
+/* tablet: placa algo más corta. El cordel mantiene el largo de
+   escritorio —el nav sigue siendo de una fila— */
 @media (max-width: 900px) {
-  .radio-hang::before { height: calc(var(--nav-h) + 0.9rem); }
-
   .radio-plate {
     gap: 0.26rem;
     padding: 0.46rem 0.6rem;
@@ -731,7 +788,13 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    un poco en alto para seguir siendo cómoda de tocar; sin hover como
    único mecanismo, el toque siempre funciona */
 @media (max-width: 620px) {
-  .radio-hang::before { height: calc(var(--nav-h) + 0.8rem); }
+  /* aquí el nav se parte en dos filas (logo + enlaces) y mide ~95px:
+     el cordel tapa eso y deja 40 a la vista, para que la nube asome
+     entera por debajo de la barra en vez de quedarse pegada a ella */
+  .radio-hang {
+    --cord-tapa: 95px;
+    --cord-vivo: 40px;
+  }
 
   .radio-plate {
     gap: 0.24rem;
