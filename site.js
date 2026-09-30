@@ -68,4 +68,22 @@
       if (img.parentElement) { img.parentElement.classList.add('no-img'); }
     });
   });
+
+  /* ---------- 4. WhatsApp flotante ----------
+     Se retira mientras el footer está a la vista, así no tapa sus
+     enlaces ni los íconos sociales (y deja de competir con el
+     contacto cuando ya está en pantalla). El banner de cookies se
+     resuelve en CSS, sin JS. */
+  var waFloat = document.querySelector('.wa-float');
+  var siteFooter = document.querySelector('.site-footer');
+
+  if (waFloat && siteFooter && 'IntersectionObserver' in window) {
+    var footerIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        waFloat.classList.toggle('is-hidden', entry.isIntersecting);
+      });
+    }, { threshold: 0 });
+
+    footerIO.observe(siteFooter);
+  }
 })();

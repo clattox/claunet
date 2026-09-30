@@ -448,8 +448,19 @@
   transition: color 0.2s var(--ease);
 }
 
+/* detalle de la CTA: la flecha empuja hacia la conversación */
+.contact-arrow {
+  display: inline-block;
+  margin-left: 0.4rem;
+  color: var(--accent);
+  transition: transform 0.2s var(--ease);
+}
+
 .contact-row:hover .contact-val,
 .contact-row:focus-visible .contact-val { color: var(--accent-strong); }
+
+.contact-row:hover .contact-arrow,
+.contact-row:focus-visible .contact-arrow { transform: translateX(3px); }
 
 /* ===== Responsive ===== */
 @media (max-width: 900px) {

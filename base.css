@@ -329,6 +329,102 @@ html:not(.js) .theme-toggle { display: none; }
 .footer-social svg { width: 16px; height: 16px; display: block; }
 .footer-social:hover { color: var(--accent-strong); }
 
+/* ===== WhatsApp flotante =====
+   Acción de contacto persistente, derivada del lenguaje del sitio:
+   mismo gradiente y ángulo que el isotipo (azul ClauNet, 135°),
+   radio 2px como las tarjetas de proyecto, tipografía mono para la
+   etiqueta y el acento del sistema para el detalle.
+   En reposo es un ícono compacto (54px); con puntero fino se expande
+   al hover o al foco y revela «Hablemos». En táctil permanece
+   compacto: el nombre accesible viene del aria-label del enlace. */
+.wa-float {
+  position: fixed;
+  right: clamp(0.9rem, 3vw, 1.9rem);
+  bottom: calc(clamp(0.9rem, 3vw, 1.9rem) + env(safe-area-inset-bottom, 0px));
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--text);
+  text-decoration: none;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease),
+              visibility 0.3s var(--ease), border-color 0.25s var(--ease),
+              box-shadow 0.25s var(--ease);
+}
+
+:root[data-theme="dark"] .wa-float {
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+/* Se retira cuando el banner de cookies o el footer ocupan la esquina
+   inferior derecha. El footer se detecta con .is-hidden (site.js). */
+html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
+.wa-float.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+/* marca: tile geométrico con el gradiente de la identidad.
+   Color de tinta = fondo (mismo criterio que .cookie-btn-accept),
+   así el contraste se mantiene en claro y oscuro. */
+.wa-float__mark {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: var(--bg);
+}
+
+.wa-float__mark svg { width: 19px; height: 19px; display: block; }
+
+/* etiqueta: colapsada en reposo, se despliega al hover/focus */
+.wa-float__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 0;
+  padding-inline: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: max-width 0.3s var(--ease), opacity 0.2s var(--ease),
+              padding 0.3s var(--ease);
+}
+
+.wa-float__arrow {
+  color: var(--accent-strong);
+  transition: transform 0.25s var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wa-float:hover,
+  .wa-float:focus-visible { border-color: var(--accent2); }
+
+  .wa-float:hover .wa-float__label,
+  .wa-float:focus-visible .wa-float__label {
+    max-width: 7rem;
+    padding-inline: 0.85rem 0.4rem;
+    opacity: 1;
+  }
+
+  .wa-float:hover .wa-float__arrow,
+  .wa-float:focus-visible .wa-float__arrow { transform: translateX(2px); }
+}
+
 /* ===== Reveal on scroll =====
    El retardo se controla con --reveal-delay en cada elemento,
    en lugar de nth-child, para que sobreviva a reordenamientos. */
