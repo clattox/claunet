@@ -33,6 +33,19 @@
   --section-y: clamp(4.5rem, 9vw, 7rem);
   --nav-h: 88px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Nube de la placa de radio: el azul de marca muy rebajado —arriba
+     un pastel azulado, abajo casi blanco— con el borde del mismo azul
+     y opacidad moderada. Sobre ese fondo el texto va en
+     --accent-strong, que sí cumple contraste AA. */
+  --cloud-a: #ecf5ff;
+  --cloud-b: #fbfdff;
+  --cloud-stroke: rgba(26, 111, 255, 0.26);
+  /* Segunda línea de la nube: una sans más humana que la mono. Space
+     Grotesk no se carga hoy —el sitio pide DM Mono + DM Sans—, así que
+     se resuelve en DM Sans; si algún día se añade, la toma sola. Las
+     fuentes globales del sitio no se tocan. */
+  --font-plate: 'Space Grotesk', 'DM Sans', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -45,6 +58,9 @@
     --accent: #4d8fff;
     --accent-strong: #6aa3ff;  /* 7.6:1 sobre --bg */
     --accent2: #6aa3ff;
+    --cloud-a: #131a24;        /* en oscuro la nube es azul de marca */
+    --cloud-b: #0e1219;        /* apagado, no un blanco que deslumbre */
+    --cloud-stroke: rgba(90, 174, 255, 0.3);
   }
 }
 
@@ -57,6 +73,9 @@
   --accent: #4d8fff;
   --accent-strong: #6aa3ff;
   --accent2: #6aa3ff;
+  --cloud-a: #131a24;
+  --cloud-b: #0e1219;
+  --cloud-stroke: rgba(90, 174, 255, 0.3);
 }
 
 /* ===== Base ===== */
@@ -425,14 +444,15 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   .wa-float:focus-visible .wa-float__arrow { transform: translateX(2px); }
 }
 
-/* ===== Radio flotante — placa colgante (easter egg) =====
-   Acid Flashback Radio no se presenta como reproductor: es una placa
-   pequeña colgada del borde inferior del nav, arriba a la derecha
-   (el WhatsApp vive abajo, así nunca se cruzan). Reutiliza el idioma
-   de .wa-float —borde de 1px, radio 2px, mono para la etiqueta—, y es
-   un enlace: el clic abre el reproductor oficial de InternetFM en su
-   propia ventana. Ningún audio sale de este sitio —la CSP de Vercel
-   solo permite medios same-origin, y no se toca—, así que la placa
+/* ===== Radio flotante — nube colgante (easter egg) =====
+   Acid Flashback Radio no se presenta como reproductor: es una nube
+   pequeña colgada del borde inferior del nav, arriba a la derecha (el
+   WhatsApp vive abajo, así nunca se cruzan). La silueta es la nube del
+   logo de ClauNet —tres lomas, dos cúspides, tres festones— muy
+   rebajada: el mismo azul de marca, casi blanco, con un trazo de 1px.
+   Y es un enlace: el clic abre el reproductor oficial de InternetFM en
+   su propia ventana. Ningún audio sale de este sitio —la CSP de Vercel
+   solo permite medios same-origin, y no se toca—, así que la nube
    nunca dice «sonando»: dice lo que hace (abrir) y dónde vive la
    radio (fuera). */
 .radio-hang {
@@ -448,7 +468,7 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
 }
 
 /* cordel: arranca en el borde superior del viewport y el nav —opaco—
-   lo tapa hasta su línea inferior, así la placa parece colgar de la
+   lo tapa hasta su línea inferior, así la nube parece colgar de la
    barra y el punto de anclaje nunca queda a la vista */
 .radio-hang::before {
   content: '';
@@ -458,7 +478,7 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   opacity: 0.35;
 }
 
-/* aquí no hay <audio>: sin JS la placa sigue sirviendo, porque es un
+/* aquí no hay <audio>: sin JS la nube sigue sirviendo, porque es un
    <a> al reproductor oficial y el navegador lo abre solo. Con JS solo
    se añade la ventana compacta y el aviso de estado. */
 
@@ -469,11 +489,19 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   align-items: flex-start;
   gap: 0.3rem;
   padding: 0.5rem 0.68rem;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  background: var(--bg);
-  color: var(--text);
+  /* la caja sigue siendo exactamente la de antes —mismo relleno, mismo
+     borde de 1px—, pero el fondo y el borde son transparentes: los
+     dibuja la nube. Por eso el tamaño, la posición y el área táctil no
+     se mueven ni un píxel */
+  border: 1px solid transparent;
+  border-radius: 15px;       /* redondea el anillo de foco */
+  background: transparent;
+  color: var(--accent-strong); /* azul oscuro de marca sobre el pastel */
   text-decoration: none;     /* es un <a>, no un <button> */
+  /* el ancho y el alto de la placa anterior: así la nube se dibuja
+     siempre sobre la misma caja, diga lo que diga el estado */
+  min-width: 187px;
+  min-height: 49px;
   /* sin esto el <a> hereda el line-height 1.6 del body y la placa
      crece 6px: el <button> traía «normal» del navegador y esa caja
      es la que se conserva */
@@ -483,36 +511,72 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
-  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease),
-              transform 0.25s var(--ease);
+  transition: transform 0.25s var(--ease);
 }
 
-:root[data-theme="dark"] .radio-plate {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+/* La silueta: un solo <path> —una forma, un trazo de 1px— dibujado
+   detrás del texto. El SVG se sale 6px por arriba de la caja para que
+   las lomas de la nube respiren por encima del texto; como crece hacia
+   el nav y no hacia abajo, la caja del enlace no se mueve: la nube mide
+   visualmente ~184 × 52 en escritorio. */
+.radio-plate__cloud {
+  position: absolute;
+  inset: -6px -3px 0;
+  z-index: 0;
+  overflow: visible;         /* el trazo no se recorta */
+  pointer-events: none;      /* es decorativa: el clic es de la placa */
+  /* la sombra sigue la silueta: una caja con el fondo transparente no
+     proyecta una sombra creíble */
+  filter: drop-shadow(0 7px 16px rgba(0, 0, 0, 0.08));
+  transition: filter 0.25s var(--ease);
 }
 
-/* solo hay un estado visible a la vez y el texto es la señal:
-   el color ilustra, no informa */
+:root[data-theme="dark"] .radio-plate__cloud {
+  filter: drop-shadow(0 7px 16px rgba(0, 0, 0, 0.45));
+}
+
+.radio-plate__cloud-top { stop-color: var(--cloud-a); }
+.radio-plate__cloud-bottom { stop-color: var(--cloud-b); }
+
+.radio-plate__cloud-path {
+  stroke: var(--cloud-stroke);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;  /* 1px real en cualquier ancho */
+  transition: stroke 0.25s var(--ease);
+}
+
+/* solo hay un estado visible a la vez y el texto es la señal: el color
+   ilustra, no informa. Y dos registros dentro de la nube: la pregunta
+   en la mono —easter egg técnico, un punto más presente— y la radio en
+   una sans humana, más pequeña. El azul de marca de la placa tiñe las
+   dos líneas */
 .radio-plate__title {
   font-size: 0.7rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
+  /* sobre la nube: sin capa propia, el <svg> posicionado —que va
+     detrás— taparía el texto */
+  position: relative;
+  z-index: 1;
 }
 
 .radio-plate__title--opening,
 .radio-plate__title--error { display: none; }
 
-/* el fallo al abrir es una frase: se parte en dos líneas antes que
-   ensanchar la placa */
+/* el fallo al abrir es una frase: va en la sans de la placa —la misma
+   voz que la línea de la radio— y en una sola línea, para que la caja
+   conserve su alto y la silueta de la nube no se deforme */
 .radio-plate__title--error {
-  max-width: 9.5rem;
-  font-size: 0.62rem;
+  max-width: none;
+  font-family: var(--font-plate);
+  font-weight: 500;
+  font-size: 0.6rem;
   line-height: 1.35;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   text-transform: none;
-  white-space: normal;
+  white-space: nowrap;
   color: var(--muted);
 }
 
@@ -524,16 +588,28 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
+  /* sobre la nube, igual que el título */
+  position: relative;
+  z-index: 1;
+}
+
+/* la línea de la radio: sans, peso medio y tracking moderado — más
+   editorial y menos técnica que la mono del título */
+.radio-plate__station {
+  font-family: var(--font-plate);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--accent-strong);
 }
 
 /* «↗» de la esquina: presente desde el reposo —muy tenue— para que el
-   clic no prometa algo que no es. Se apaga cuando el texto de estado ya
-   dice que la radio está fuera, y no ocupa espacio: la placa mide
-   exactamente lo mismo que antes */
+   clic no prometa algo que no es. Vive dentro de la loma derecha de la
+   nube, se apaga cuando el texto de estado ya dice que la radio está
+   fuera, y no ocupa espacio: la caja mide lo mismo que antes */
 .radio-plate__ext {
   position: absolute;
-  top: 0.28rem;
-  right: 0.38rem;
+  top: 0.5rem;
+  right: 0.6rem;
   font-size: 0.5rem;
   line-height: 1;
   opacity: 0.45;
@@ -562,8 +638,8 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   width: 2px;
   height: 100%;
   border-radius: 1px;
-  background: var(--accent-strong);
-  opacity: 0.35;
+  background: var(--accent);  /* azul de marca: más intenso que la nube */
+  opacity: 0.45;
   transform: scaleY(0.16);
   transform-origin: bottom;
   transition: opacity 0.25s var(--ease);
@@ -609,21 +685,31 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    «radio externa» las barras quedan planas: aquí no suena nada */
 .radio-hang.is-opening { animation-duration: 7s; }
 
-/* no se pudo abrir: borde discontinuo, como etiqueta descolgada */
-.radio-hang.is-error .radio-plate { border-style: dashed; }
+/* no se pudo abrir: el trazo de la nube se vuelve discontinuo, como
+   etiqueta descolgada */
+.radio-hang.is-error .radio-plate__cloud-path { stroke-dasharray: 5 4; }
 
 .radio-plate:active { transform: translateY(2px); }
-.radio-plate:focus-visible { border-color: var(--accent2); }
+
+/* el foco: el trazo de la nube se enciende y el anillo del navegador se
+   separa 9px para rodear toda la silueta —los lomos crecen 6px por
+   encima de la caja, y el anillo debe abarcarlos */
+.radio-plate:focus-visible .radio-plate__cloud-path { stroke: var(--accent2); }
+.radio-plate:focus-visible { outline-offset: 9px; }
 
 @media (hover: hover) and (pointer: fine) {
-  .radio-plate:hover {
-    border-color: var(--accent2);
-    box-shadow: 0 11px 24px rgba(0, 0, 0, 0.1);
-    transform: translateY(1px);
+  .radio-plate:hover { transform: translateY(1px); }
+
+  .radio-plate:hover .radio-plate__cloud-path { stroke: var(--accent2); }
+
+  .radio-plate:hover .radio-plate__cloud,
+  .radio-plate:focus-visible .radio-plate__cloud {
+    filter: drop-shadow(0 9px 20px rgba(0, 0, 0, 0.12));
   }
 
-  :root[data-theme="dark"] .radio-plate:hover {
-    box-shadow: 0 11px 24px rgba(0, 0, 0, 0.5);
+  :root[data-theme="dark"] .radio-plate:hover .radio-plate__cloud,
+  :root[data-theme="dark"] .radio-plate:focus-visible .radio-plate__cloud {
+    filter: drop-shadow(0 9px 20px rgba(0, 0, 0, 0.55));
   }
 }
 
@@ -649,13 +735,16 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
 
   .radio-plate {
     gap: 0.24rem;
-    padding: 0.5rem 0.52rem;   /* alto final ≈45px: área táctil cómoda */
+    padding: 0.5rem 0.52rem;
+    /* la caja de siempre, con el alto táctil mínimo garantizado */
+    min-width: 146px;
+    min-height: 44px;
   }
 
   .radio-plate__title { font-size: 0.58rem; letter-spacing: 0.04em; }
   .radio-plate__meta { font-size: 0.46rem; letter-spacing: 0.09em; gap: 0.3rem; }
   .radio-plate__eq { height: 8px; }
-  .radio-plate__title--error { max-width: 7.8rem; font-size: 0.54rem; }
+  .radio-plate__title--error { font-size: 0.5rem; }
 }
 
 /* ===== Reveal on scroll =====

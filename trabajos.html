@@ -238,6 +238,20 @@
      href="https://internetfm.com/ifm-radio/ifm-player.html?stream=https%3A%2F%2Fcanada1.reliastream.com%2Fproxy%2Fafr%3Fmp%3D%2Fstream&amp;name=Acid+Flashback+Radio&amp;logo=https%3A%2F%2Finternetfm.com%2Fwp-content%2Fuploads%2Fstation-logos%2FAFR.png&amp;meta=https%3A%2F%2Fcanada1.reliastream.com%2Fproxy%2Fafr%2Fcurrentsong%3Fsid%3D1"
      target="_blank" rel="noopener external"
      aria-label="Escuchar Acid Flashback Radio en su reproductor oficial (se abre en una ventana nueva)">
+    <!-- silueta: la nube del logo de ClauNet —tres lomas, dos cúspides,
+         tres festones— muy rebajada. Un solo <path> de un trazo de 1px,
+         detrás del texto; se sale 6px por arriba de la caja del enlace
+         para que las lomas respiren sin mover su caja. Es decorativa:
+         el nombre accesible lo da el aria-label del <a>. -->
+    <svg class="radio-plate__cloud" viewBox="0 0 194 58" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="radioCloud" x1="0" y1="0" x2=".35" y2="1">
+          <stop class="radio-plate__cloud-top" offset="0"/>
+          <stop class="radio-plate__cloud-bottom" offset="1"/>
+        </linearGradient>
+      </defs>
+      <path class="radio-plate__cloud-path" fill="url(#radioCloud)" d="M4,34C4,22 12,4 27,4C35,4 41,7 46,14C51,5 62,2 78,2C93,2 105,7 110,14C117,5 128,3 142,4C160,5 180,10 189,20C191,25 189,34 184,41C178,50 168,55 156,55C145,55 139,51 134,49C128,54 117,57 104,57C90,57 79,53 72,49C66,54 54,56 42,56C28,56 17,52 10,45C6,41 4,38 4,34Z"/>
+    </svg>
     <span class="radio-plate__ext" aria-hidden="true">↗</span>
     <span class="radio-plate__title radio-plate__title--idle">¿Mucho silencio?</span>
     <span class="radio-plate__title radio-plate__title--opening">♪ Acid Flashback</span>
