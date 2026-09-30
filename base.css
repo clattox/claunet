@@ -800,10 +800,12 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   }
 
   /* en el home sí hay hero y el titular empieza más abajo: la nube
-     cuelga 48px más para no quedarse pegada al nav ni echarse encima
-     de «Claudio Torres» (el hero le deja el sitio, en home.css). Si
-     el navegador no entiende :has(), se queda el largo de arriba */
-  body:has(.hero) .radio-hang { --cord-vivo: 88px; }
+     cuelga 20px más que en la base —lo justo para no quedarse pegada
+     al nav— pero sin llegar a dominar el hero. El hero le deja el
+     sitio por arriba (home.css) y así el titular queda a ~20px de la
+     nube. Si el navegador no entiende :has(), se queda el largo de
+     arriba */
+  body:has(.hero) .radio-hang { --cord-vivo: 60px; }
 
   .radio-plate {
     gap: 0.24rem;

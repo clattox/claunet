@@ -480,9 +480,10 @@
   .hero {
     min-height: auto;
     /* el hero arranca más abajo para dejar sitio a la nube colgada:
-       cuelga hasta ~230px, así que el kicker y el titular empiezan
-       después y la nube no se les echa encima */
-    padding: 8.2rem var(--gutter) 4rem;
+       con el cordel del home (base.css) la nube termina hacia los
+       ~205px, así que el hero empieza justo después y el titular
+       queda a un palmo de ella —aire de sobra, sin hueco muerto */
+    padding: 5.75rem var(--gutter) 4rem;
   }
 
   .hero-title { letter-spacing: -0.035em; }
