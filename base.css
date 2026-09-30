@@ -460,7 +460,10 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
                   alto real de la barra (una fila en escritorio, dos en
                   móvil), no --nav-h, que además gobierna el
                   scroll-margin-top de las anclas y no se toca
-     --cord-vivo  el tramo que queda a la vista, entre el nav y la nube
+     --cord-vivo  el tramo que queda a la vista, entre el nav y la nube.
+                  Aquí se decide cuánto cuelga la pieza: si crece, la
+                  nube baja y el clavo no se mueve —el cordel se alarga
+                  por abajo—, así que la cuerda se ve más, no menos
      --loma       lo que la silueta asoma por encima de su propia caja
                   (el inset negativo del <svg>: si cambia, cambia aquí)
      --junta      lo que el cordel se mete dentro de la nube: la placa
@@ -472,7 +475,7 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    así que el balanceo no puede descoserlas. */
 .radio-hang {
   --cord-tapa: 82px;
-  --cord-vivo: 55px;
+  --cord-vivo: 103px;
   --loma: 6px;
   --junta: 2px;
   position: fixed;
@@ -784,17 +787,23 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   .radio-plate__eq { height: 9px; }
 }
 
-/* móvil: la placa se acerca al nav (para no tapar contenido) y crece
-   un poco en alto para seguir siendo cómoda de tocar; sin hover como
-   único mecanismo, el toque siempre funciona */
+/* móvil: la placa crece un poco en alto para seguir siendo cómoda de
+   tocar; sin hover como único mecanismo, el toque siempre funciona */
 @media (max-width: 620px) {
   /* aquí el nav se parte en dos filas (logo + enlaces) y mide ~95px:
-     el cordel tapa eso y deja 40 a la vista, para que la nube asome
-     entera por debajo de la barra en vez de quedarse pegada a ella */
+     el cordel tapa eso y deja 40 a la vista. Es el largo que vale en
+     cualquier página —también en las internas, donde el titular
+     arranca justo bajo el nav y no hay hueco para colgar más abajo— */
   .radio-hang {
     --cord-tapa: 95px;
     --cord-vivo: 40px;
   }
+
+  /* en el home sí hay hero y el titular empieza más abajo: la nube
+     cuelga 48px más para no quedarse pegada al nav ni echarse encima
+     de «Claudio Torres» (el hero le deja el sitio, en home.css). Si
+     el navegador no entiende :has(), se queda el largo de arriba */
+  body:has(.hero) .radio-hang { --cord-vivo: 88px; }
 
   .radio-plate {
     gap: 0.24rem;

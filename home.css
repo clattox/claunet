@@ -479,7 +479,10 @@
 @media (max-width: 620px) {
   .hero {
     min-height: auto;
-    padding: 3.2rem var(--gutter) 4rem;
+    /* el hero arranca más abajo para dejar sitio a la nube colgada:
+       cuelga hasta ~230px, así que el kicker y el titular empiezan
+       después y la nube no se les echa encima */
+    padding: 8.2rem var(--gutter) 4rem;
   }
 
   .hero-title { letter-spacing: -0.035em; }
