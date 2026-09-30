@@ -425,6 +425,214 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   .wa-float:focus-visible .wa-float__arrow { transform: translateX(2px); }
 }
 
+/* ===== Radio flotante — placa colgante (easter egg) =====
+   Acid Flashback Radio no se presenta como reproductor: es una placa
+   pequeña colgada del borde inferior del nav, arriba a la derecha
+   (el WhatsApp vive abajo, así nunca se cruzan). Reutiliza el idioma
+   de .wa-float —borde de 1px, radio 2px, mono para la etiqueta— y el
+   audio solo suena después de un clic: el play lo dispara site.js. */
+.radio-hang {
+  position: fixed;
+  top: 0;
+  right: clamp(0.9rem, 3vw, 1.9rem);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: 50% 0;   /* oscila desde el clavo, no desde el centro */
+  animation: radio-swing 12s ease-in-out infinite;
+}
+
+/* cordel: arranca en el borde superior del viewport y el nav —opaco—
+   lo tapa hasta su línea inferior, así la placa parece colgar de la
+   barra y el punto de anclaje nunca queda a la vista */
+.radio-hang::before {
+  content: '';
+  width: 1px;
+  height: calc(var(--nav-h) + 1.15rem);
+  background: var(--muted);
+  opacity: 0.35;
+}
+
+/* el <audio> no dibuja nada: 0×0 en lugar de display:none para no
+   alterar nunca la reproducción */
+.radio-hang audio {
+  display: block;
+  width: 0;
+  height: 0;
+}
+
+/* sin JS no hay reproducción posible: se retira, igual que el toggle
+   de tema (html:not(.js) .theme-toggle) */
+html:not(.js) .radio-hang { display: none; }
+
+.radio-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  padding: 0.5rem 0.68rem;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease),
+              transform 0.25s var(--ease);
+}
+
+:root[data-theme="dark"] .radio-plate {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* solo hay un estado visible a la vez y el texto es la señal:
+   el color ilustra, no informa */
+.radio-plate__title {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.radio-plate__title--live,
+.radio-plate__title--loading,
+.radio-plate__title--error { display: none; }
+
+/* el aviso de caída es una frase: se parte en dos líneas antes que
+   ensanchar la placa */
+.radio-plate__title--error {
+  max-width: 9.5rem;
+  font-size: 0.62rem;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  white-space: normal;
+  color: var(--muted);
+}
+
+.radio-plate__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ecualizador: barras planas = detenido, barras llenas = sonando.
+   El alto de la barra —no el color— comunica el estado; por eso al
+   reproducir también se fija scaleY(1), que sobrevive a la regla de
+   animaciones reducidas */
+.radio-plate__eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 10px;
+}
+
+.radio-plate__bar {
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  background: var(--accent-strong);
+  opacity: 0.35;
+  transform: scaleY(0.16);
+  transform-origin: bottom;
+  transition: opacity 0.25s var(--ease);
+}
+
+@keyframes radio-eq {
+  0%, 100% { transform: scaleY(0.25); }
+  50%      { transform: scaleY(1); }
+}
+
+/* colgado: oscilación apenas perceptible sobre el clavo */
+@keyframes radio-swing {
+  0%, 100% { transform: rotate(-1.1deg); }
+  50%      { transform: rotate(-0.25deg); }
+}
+
+.radio-hang.is-loading .radio-plate__title--loading,
+.radio-hang.is-live .radio-plate__title--live,
+.radio-hang.is-error .radio-plate__title--error { display: inline; }
+
+.radio-hang.is-loading .radio-plate__title--idle,
+.radio-hang.is-live .radio-plate__title--idle,
+.radio-hang.is-error .radio-plate__title--idle { display: none; }
+
+/* conectando: sin animación, solo las barras a media asta */
+.radio-hang.is-loading .radio-plate__bar {
+  opacity: 0.5;
+  transform: scaleY(0.45);
+}
+
+.radio-hang.is-live .radio-plate__bar {
+  opacity: 1;
+  transform: scaleY(1);
+  animation: radio-eq 1.05s ease-in-out infinite;
+}
+
+.radio-hang.is-live .radio-plate__bar:nth-child(2) { animation-duration: 0.8s; }
+.radio-hang.is-live .radio-plate__bar:nth-child(3) { animation-duration: 1.35s; }
+
+/* sonando la placa se mece un poco más rápido */
+.radio-hang.is-live { animation-duration: 7s; }
+
+/* caída del stream: borde discontinuo, como etiqueta descolgada */
+.radio-hang.is-error .radio-plate { border-style: dashed; }
+
+.radio-plate:active { transform: translateY(2px); }
+.radio-plate:focus-visible { border-color: var(--accent2); }
+
+@media (hover: hover) and (pointer: fine) {
+  .radio-plate:hover {
+    border-color: var(--accent2);
+    box-shadow: 0 11px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(1px);
+  }
+
+  :root[data-theme="dark"] .radio-plate:hover {
+    box-shadow: 0 11px 24px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* tablet: placa algo más corta, cordel algo más corto */
+@media (max-width: 900px) {
+  .radio-hang::before { height: calc(var(--nav-h) + 0.9rem); }
+
+  .radio-plate {
+    gap: 0.26rem;
+    padding: 0.46rem 0.6rem;
+  }
+
+  .radio-plate__title { font-size: 0.66rem; }
+  .radio-plate__meta { font-size: 0.54rem; letter-spacing: 0.12em; }
+  .radio-plate__eq { height: 9px; }
+}
+
+/* móvil: la placa se acerca al nav (para no tapar contenido) y crece
+   un poco en alto para seguir siendo cómoda de tocar; sin hover como
+   único mecanismo, el toque siempre funciona */
+@media (max-width: 620px) {
+  .radio-hang::before { height: calc(var(--nav-h) + 0.8rem); }
+
+  .radio-plate {
+    gap: 0.24rem;
+    padding: 0.5rem 0.52rem;   /* alto final ≈45px: área táctil cómoda */
+  }
+
+  .radio-plate__title { font-size: 0.58rem; letter-spacing: 0.04em; }
+  .radio-plate__meta { font-size: 0.46rem; letter-spacing: 0.09em; gap: 0.3rem; }
+  .radio-plate__eq { height: 8px; }
+  .radio-plate__title--error { max-width: 7.8rem; font-size: 0.54rem; }
+}
+
 /* ===== Reveal on scroll =====
    El retardo se controla con --reveal-delay en cada elemento,
    en lugar de nth-child, para que sobreviva a reordenamientos. */

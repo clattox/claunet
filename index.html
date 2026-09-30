@@ -396,6 +396,26 @@
   </div>
 </footer>
 
+<!-- Radio flotante — placa colgante, easter egg de ClauNet.
+     Arranca detenida: el clic es lo único que hace sonar el stream. -->
+<div class="radio-hang">
+  <button class="radio-plate" id="radioToggle" type="button" aria-label="Reproducir Acid Flashback Radio" aria-pressed="false">
+    <span class="radio-plate__title radio-plate__title--idle">¿Mucho silencio?</span>
+    <span class="radio-plate__title radio-plate__title--loading">♪ Conectando…</span>
+    <span class="radio-plate__title radio-plate__title--live">♪ Sonando ahora</span>
+    <span class="radio-plate__title radio-plate__title--error">La radio no está disponible ahora</span>
+    <span class="radio-plate__meta">
+      <span class="radio-plate__eq" aria-hidden="true">
+        <span class="radio-plate__bar"></span>
+        <span class="radio-plate__bar"></span>
+        <span class="radio-plate__bar"></span>
+      </span>
+      <span class="radio-plate__station">♪ Acid Flashback Radio</span>
+    </span>
+  </button>
+  <audio id="afrStream" preload="none" src="https://canada1.reliastream.com/proxy/afr?mp=/stream"></audio>
+</div>
+
 <!-- WhatsApp flotante — mismo lenguaje visual que el resto del sitio -->
 <a class="wa-float" href="https://wa.me/56982540503" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp (abre en una nueva pestaña)">
   <span class="wa-float__mark" aria-hidden="true">

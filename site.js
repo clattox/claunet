@@ -4,6 +4,8 @@
      1. Theme toggle (persiste en localStorage)
      2. Aparición progresiva de .reveal (IntersectionObserver)
      3. Fallback de imágenes cuando una preview no carga
+     4. Retiro del WhatsApp flotante al llegar al footer
+     5. Radio flotante (easter egg Acid Flashback)
 
    Sin dependencias. El tema se aplica inline en el <head>
    (evita el flash de tema); aquí solo se conecta la interacción.
@@ -85,5 +87,89 @@
     }, { threshold: 0 });
 
     footerIO.observe(siteFooter);
+  }
+
+  /* ---------- 5. Radio flotante — easter egg ----------
+     Acid Flashback Radio colgando de la esquina. El stream solo se
+     pide después de un clic (el <audio> usa preload="none"), así que
+     nada suena al cargar. El estado visual lo dictan los eventos
+     reales del <audio> —playing/pause/error— y no el clic: la placa
+     nunca dice algo distinto de lo que se oye. Si el stream falla
+     (red, formato, CORS), la placa lo avisa y el sitio sigue igual. */
+  var radioHang = document.querySelector('.radio-hang');
+  var radioToggle = document.getElementById('radioToggle');
+  var radioStream = document.getElementById('afrStream');
+
+  if (radioHang && radioToggle && radioStream) {
+    var radioNow = 'idle';
+    var radioTimer = null;
+    var radioFailed = false;
+
+    var radioState = function (state) {
+      radioNow = state;
+      radioHang.classList.toggle('is-loading', state === 'loading');
+      radioHang.classList.toggle('is-live', state === 'live');
+      radioHang.classList.toggle('is-error', state === 'error');
+      radioToggle.setAttribute('aria-pressed', state === 'live' ? 'true' : 'false');
+      radioToggle.setAttribute('aria-label',
+        state === 'live' ? 'Pausar Acid Flashback Radio'
+          : state === 'loading' ? 'Conectando con Acid Flashback Radio'
+            : state === 'error' ? 'Reintentar Acid Flashback Radio'
+              : 'Reproducir Acid Flashback Radio');
+    };
+
+    var radioClear = function () {
+      if (radioTimer) { clearTimeout(radioTimer); radioTimer = null; }
+    };
+
+    var radioFail = function () {
+      radioClear();
+      radioFailed = true;
+      radioState('error');
+    };
+
+    radioStream.addEventListener('playing', function () {
+      radioClear();
+      radioFailed = false;
+      radioState('live');
+    });
+
+    /* solo se vuelve a «detenido» si de verdad estaba sonando o
+       conectando: así un pause rezagado no pisa el aviso de error */
+    radioStream.addEventListener('pause', function () {
+      if (radioNow === 'live' || radioNow === 'loading') {
+        radioClear();
+        radioState('idle');
+      }
+    });
+
+    radioStream.addEventListener('error', radioFail);
+
+    radioToggle.addEventListener('click', function () {
+      if (!radioStream.paused) {
+        radioStream.pause();
+        /* un stream en vivo no se reanuda donde quedó: se reconecta */
+        if (typeof radioStream.load === 'function') { radioStream.load(); }
+        radioClear();
+        radioState('idle');
+        return;
+      }
+
+      /* tras un error el <audio> queda en estado terminal: hay que
+         recargarlo antes de reintentar */
+      if (radioFailed) {
+        radioFailed = false;
+        if (typeof radioStream.load === 'function') { radioStream.load(); }
+      }
+
+      radioState('loading');
+      radioClear();
+      radioTimer = setTimeout(radioFail, 8000);
+
+      var attempt = radioStream.play();
+      if (attempt && typeof attempt.catch === 'function') {
+        attempt.catch(radioFail);
+      }
+    });
   }
 })();
