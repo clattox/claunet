@@ -547,9 +547,9 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
 .radio-plate__station--opening,
 .radio-plate__station--away { display: none; }
 
-/* ecualizador: barras planas = detenido, barras llenas = sonando.
+/* ecualizador: barras planas = detenido, barras llenas = abriendo.
    El alto de la barra —no el color— comunica el estado; por eso al
-   reproducir también se fija scaleY(1), que sobrevive a la regla de
+   abrir también se fija scaleY(1), que sobrevive a la regla de
    animaciones reducidas */
 .radio-plate__eq {
   display: flex;
