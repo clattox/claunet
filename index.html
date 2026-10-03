@@ -137,7 +137,8 @@
     <p class="section-sub">Una selección de proyectos web para clientes y organizaciones.</p>
   </div>
 
-  <div class="work-list">
+  <div class="work-carousel" data-carousel>
+    <div class="work-list" id="workList" role="group" aria-roledescription="carrusel" aria-label="Proyectos seleccionados">
 
     <a class="work-entry reveal" href="https://mardanza.vercel.app/" target="_blank" rel="noopener">
       <div class="work-body">
@@ -266,6 +267,20 @@
       </figure>
     </a>
 
+    </div>
+
+    <div class="work-carousel__nav" role="group" aria-label="Controles del carrusel de proyectos">
+      <button type="button" class="work-nav-btn" data-carousel-prev aria-label="Proyecto anterior" aria-controls="workList"><span aria-hidden="true">←</span></button>
+
+      <p class="work-counter">
+        <span class="sr-only" role="status" aria-live="polite" data-carousel-status>Proyecto 1 de 8</span>
+        <span class="work-counter__view" aria-hidden="true"><span data-carousel-current>01</span><span class="work-counter__sep">/</span><span data-carousel-total>08</span></span>
+      </p>
+
+      <button type="button" class="work-nav-btn" data-carousel-next aria-label="Proyecto siguiente" aria-controls="workList"><span aria-hidden="true">→</span></button>
+
+      <button type="button" class="work-pause-btn" data-carousel-pause aria-pressed="false" aria-label="Pausar el avance automático de proyectos"><span aria-hidden="true" data-carousel-pause-label>pausar</span></button>
+    </div>
   </div>
 
   <a class="work-all" href="trabajos.html">Ver todos los proyectos ↗</a>

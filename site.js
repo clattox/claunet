@@ -6,6 +6,7 @@
      3. Fallback de imágenes cuando una preview no carga
      4. Retiro del WhatsApp flotante al llegar al footer
      5. Radio flotante (easter egg Acid Flashback)
+     6. Carrusel editorial de proyectos (index · #work)
 
    Sin dependencias. El tema se aplica inline en el <head>
    (evita el flash de tema); aquí solo se conecta la interacción.
@@ -198,5 +199,164 @@
          pestaña y la placa solo refleja el estado */
       radioNotice();
     });
+  }
+
+  /* ---------- 6. Carrusel editorial de proyectos (index · #work) ----------
+     Transforma los .work-entry EXISTENTES en un carrusel que presenta
+     un proyecto a la vez: no reescribe el HTML, solo les añade estado
+     (.is-active / aria-hidden) y controles. Solo actúa si existe
+     [data-carousel]; en el resto de las páginas no hace nada. Sin JS
+     la lista queda vertical, como siempre. */
+  var carousel = document.querySelector('[data-carousel]');
+
+  if (carousel) {
+    var workList = carousel.querySelector('.work-list');
+    var slides = workList
+      ? Array.prototype.slice.call(workList.querySelectorAll('.work-entry'))
+      : [];
+    var prevBtn = carousel.querySelector('[data-carousel-prev]');
+    var nextBtn = carousel.querySelector('[data-carousel-next]');
+    var pauseBtn = carousel.querySelector('[data-carousel-pause]');
+    var pauseLabel = carousel.querySelector('[data-carousel-pause-label]');
+    var currentEl = carousel.querySelector('[data-carousel-current]');
+    var totalEl = carousel.querySelector('[data-carousel-total]');
+    var statusEl = carousel.querySelector('[data-carousel-status]');
+
+    var totalSlides = slides.length;
+
+    if (totalSlides > 1) {
+      var AUTOPLAY_MS = 7500;
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+
+      var activeIndex = 0;
+      /* el autoplay solo se enciende si hay control para pausarlo */
+      var playing = !reduceMotion && !!pauseBtn;
+      var hovering = false;
+      var focused = false;
+      var onScreen = false;
+      var autoplayTimer = null;
+
+      if (totalEl) { totalEl.textContent = pad(totalSlides); }
+
+      var render = function () {
+        for (var i = 0; i < totalSlides; i++) {
+          var isActive = i === activeIndex;
+          slides[i].classList.toggle('is-active', isActive);
+          slides[i].setAttribute('aria-hidden', isActive ? 'false' : 'true');
+        }
+        if (currentEl) { currentEl.textContent = pad(activeIndex + 1); }
+        if (statusEl) {
+          statusEl.textContent = 'Proyecto ' + (activeIndex + 1) + ' de ' + totalSlides;
+        }
+      };
+
+      /* --- autoplay: se re-arma (contador desde cero) en cada gesto --- */
+      var stopAutoplay = function () {
+        if (autoplayTimer) { clearTimeout(autoplayTimer); autoplayTimer = null; }
+      };
+
+      var armAutoplay = function () {
+        stopAutoplay();
+        if (!playing || hovering || focused || !onScreen || document.hidden) { return; }
+        autoplayTimer = setTimeout(function () {
+          activeIndex = (activeIndex + 1) % totalSlides;
+          render();
+          armAutoplay();
+        }, AUTOPLAY_MS);
+      };
+
+      var goTo = function (target) {
+        activeIndex = ((target % totalSlides) + totalSlides) % totalSlides;
+        render();
+        armAutoplay();
+      };
+
+      var goNext = function () { goTo(activeIndex + 1); };
+      var goPrev = function () { goTo(activeIndex - 1); };
+
+      if (prevBtn) { prevBtn.addEventListener('click', goPrev); }
+      if (nextBtn) { nextBtn.addEventListener('click', goNext); }
+
+      /* --- teclado ← → mientras el foco está dentro del carrusel --- */
+      carousel.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft' || e.key === 'Left') {
+          e.preventDefault(); goPrev();
+        } else if (e.key === 'ArrowRight' || e.key === 'Right') {
+          e.preventDefault(); goNext();
+        }
+      });
+
+      /* --- swipe táctil (solo gesto horizontal dominante) --- */
+      var touchX = 0;
+      var touchY = 0;
+      var tracking = false;
+
+      workList.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 1) { tracking = false; return; }
+        touchX = e.touches[0].clientX;
+        touchY = e.touches[0].clientY;
+        tracking = true;
+      }, { passive: true });
+
+      workList.addEventListener('touchend', function (e) {
+        if (!tracking) { return; }
+        tracking = false;
+        var touch = e.changedTouches[0];
+        var dx = touch.clientX - touchX;
+        var dy = touch.clientY - touchY;
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) { goNext(); } else { goPrev(); }
+        }
+      }, { passive: true });
+
+      /* --- pausas: hover, foco dentro y pestaña en segundo plano --- */
+      carousel.addEventListener('mouseenter', function () { hovering = true; armAutoplay(); });
+      carousel.addEventListener('mouseleave', function () { hovering = false; armAutoplay(); });
+      carousel.addEventListener('focusin', function () { focused = true; armAutoplay(); });
+      carousel.addEventListener('focusout', function () { focused = false; armAutoplay(); });
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) { stopAutoplay(); } else { armAutoplay(); }
+      });
+
+      /* el autoplay solo corre mientras el carrusel está a la vista */
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            onScreen = entry.isIntersecting;
+            armAutoplay();
+          });
+        }, { threshold: 0.5 }).observe(carousel);
+      } else {
+        onScreen = true;
+      }
+
+      /* --- control de pausa (exigencia WCAG 2.2.2) --- */
+      if (pauseBtn) {
+        var syncPause = function () {
+          pauseBtn.setAttribute('aria-pressed', playing ? 'false' : 'true');
+          pauseBtn.setAttribute('aria-label', playing
+            ? 'Pausar el avance automático de proyectos'
+            : 'Reanudar el avance automático de proyectos');
+          if (pauseLabel) { pauseLabel.textContent = playing ? 'pausar' : 'reanudar'; }
+        };
+
+        /* sin autoplay (reduced-motion) el control no tiene sentido */
+        if (reduceMotion) { pauseBtn.hidden = true; }
+
+        pauseBtn.addEventListener('click', function () {
+          playing = !playing;
+          syncPause();
+          if (playing) { armAutoplay(); } else { stopAutoplay(); }
+        });
+
+        syncPause();
+      }
+
+      carousel.classList.add('is-ready');
+      render();
+      armAutoplay();
+    }
   }
 })();

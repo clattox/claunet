@@ -255,6 +255,125 @@
 
 .work-all:hover { color: var(--accent-strong); }
 
+/* ===== Work — carrusel editorial =====
+   Transformación aditiva de la lista: presenta un proyecto a la vez
+   reutilizando los mismos .work-entry (no se reescriben). Los slides
+   se apilan en la misma celda del grid, así la pista adopta la altura
+   del proyecto más alto y no hay saltos de layout al navegar.
+   Sin JS (sin .is-ready) queda la lista editorial de siempre; por eso
+   el carrusel solo se "activa" cuando el JS añade .is-ready. */
+.work-carousel {
+  position: relative;
+  --carousel-dur: 520ms;   /* 450–650ms: elegante y discreto */
+}
+
+/* navegación: solo existe cuando el carrusel está activo */
+.work-carousel__nav { display: none; }
+
+.work-carousel.is-ready .work-carousel__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 3vw, 1.7rem);
+  margin-top: clamp(1.1rem, 2.6vw, 1.8rem);
+}
+
+.work-carousel.is-ready .work-list {
+  display: grid;
+  border-bottom: 1px solid var(--border);
+}
+
+.work-carousel.is-ready .work-list > .work-entry {
+  grid-area: 1 / 1;
+  align-content: center;
+  min-height: clamp(30rem, 74vh, 46rem);   /* ~70–80vh en escritorio */
+  border-bottom: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--carousel-dur) var(--ease),
+              visibility 0s linear var(--carousel-dur);
+}
+
+/* contenido e imagen entran con el mismo desliz horizontal mínimo:
+   fade + un desplazamiento apenas perceptible */
+.work-carousel.is-ready .work-list > .work-entry .work-body,
+.work-carousel.is-ready .work-list > .work-entry .work-media {
+  transform: translateX(1.5rem);
+  transition: transform var(--carousel-dur) var(--ease);
+}
+
+.work-carousel.is-ready .work-list > .work-entry.is-active {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+  z-index: 2;
+  transition: opacity var(--carousel-dur) var(--ease), visibility 0s;
+}
+
+.work-carousel.is-ready .work-list > .work-entry.is-active .work-body,
+.work-carousel.is-ready .work-list > .work-entry.is-active .work-media {
+  transform: none;
+}
+
+/* — controles (botones reales, área táctil de 44px) — */
+.work-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s var(--ease), transform 0.2s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.work-nav-btn:hover,
+.work-nav-btn:focus-visible { color: var(--accent-strong); }
+
+.work-nav-btn:active { transform: scale(0.9); }
+
+.work-counter {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.work-counter__view {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.work-counter__sep { color: var(--border); }
+
+.work-pause-btn {
+  min-height: 44px;
+  padding: 0 0.35rem;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.work-pause-btn:hover,
+.work-pause-btn:focus-visible { color: var(--accent-strong); }
+
 /* ===== Lab ===== */
 .lab-note {
   display: inline-flex;
@@ -474,6 +593,15 @@
   .work-entry:nth-child(even) .work-media { order: 0; }
   .work-desc,
   .work-facts { max-width: 60ch; }
+
+  /* el carrusel deja el alto editorial de escritorio: en tablet/móvil
+     el slide respira con su propio contenido. La pista mantiene la
+     altura del proyecto más alto, así no hay saltos al navegar */
+  .work-carousel.is-ready .work-list > .work-entry {
+    min-height: auto;
+    padding-top: clamp(2rem, 6vw, 3rem);
+    padding-bottom: clamp(2rem, 6vw, 3rem);
+  }
 }
 
 @media (max-width: 620px) {
