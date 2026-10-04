@@ -15,6 +15,14 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+  <!-- blog:start · generado por scripts/build-blog-index.mjs — no editar a mano -->
+  <url>
+    <loc>https://claunet.cl/articulo.html?slug=pink-floyd-de-la-psicodelia-al-%C3%BAltimo-corte</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <!-- blog:end -->
   <url>
     <loc>https://claunet.cl/politica-de-privacidad.html</loc>
     <changefreq>yearly</changefreq>

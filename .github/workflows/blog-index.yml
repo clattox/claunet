@@ -3,9 +3,13 @@ name: Blog · índice de artículos
 # El panel de /admin (Sveltia CMS) publica Markdown en content/blog/ y
 # desde el navegador no puede conocerse el listado de artículos: un sitio
 # estático no permite listar directorios. Este flujo regenera
-# content/blog/index.json —la lista que lee blog.html— cada vez que se
-# publica o se edita un artículo, de modo que el listado nunca se queda
-# atrás. También corre si cambia el propio script.
+# content/blog/index.json —la lista que lee blog.html— y el bloque de
+# artículos de sitemap.xml cada vez que se publica o se edita un artículo,
+# de modo que ni el listado ni el sitemap se queden atrás. También corre si
+# cambia el propio script.
+#
+# sitemap.xml no está en la lista de disparadores a propósito: este flujo lo
+# reescribe y, si lo escuchara, se dispararía con sus propios commits.
 
 on:
   push:
@@ -32,19 +36,19 @@ jobs:
       - name: Regenerar el índice
         run: node scripts/build-blog-index.mjs
 
-      - name: Publicar el índice si cambió
+      - name: Publicar el índice y el sitemap si cambiaron
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          if git diff --quiet -- content/blog/index.json; then
-            echo "El índice ya estaba al día: no hay nada que publicar."
+          if git diff --quiet -- content/blog/index.json sitemap.xml; then
+            echo "El índice y el sitemap ya estaban al día: no hay nada que publicar."
             exit 0
           fi
 
-          git add content/blog/index.json
+          git add content/blog/index.json sitemap.xml
           # A propósito sin «[skip ci]»: Vercel despliega por commit y
           # necesita este push para servir el índice nuevo. El flujo no
           # se realimenta porque solo mira content/blog/**.md.
-          git commit -m "chore(blog): regenerar el índice de artículos"
+          git commit -m "chore(blog): regenerar el índice y el sitemap de artículos"
           git push

@@ -3,26 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog — ClauNet</title>
+<title>Artículo — ClauNet</title>
 
-<!-- OG / Social -->
-<meta property="og:title" content="Blog — ClauNet">
+<!-- OG / Social. articulo.js los completa con el título, el resumen y la
+     portada reales del artículo que pide por ?slug=. -->
+<meta property="og:title" content="Artículo — ClauNet">
 <meta property="og:description" content="Notas, ideas y obsesiones sobre música, tecnología y diseño. Los textos de Claudio Torres.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://claunet.cl/blog.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://claunet.cl/articulo.html">
 <meta property="og:image" content="https://claunet.cl/og-image.png">
-<meta property="og:image:alt" content="Blog de ClauNet">
+<meta property="og:image:alt" content="ClauNet">
 <meta property="og:locale" content="es_CL">
 <meta property="og:site_name" content="ClauNet">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Blog — ClauNet">
+<meta name="twitter:title" content="Artículo — ClauNet">
 <meta name="twitter:description" content="Notas, ideas y obsesiones sobre música, tecnología y diseño. Los textos de Claudio Torres.">
 <meta name="twitter:image" content="https://claunet.cl/og-image.png">
 <meta name="description" content="Notas, ideas y obsesiones sobre música, tecnología y diseño. Los textos de Claudio Torres.">
 <meta name="author" content="Claudio Torres">
 <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f0f0f" media="(prefers-color-scheme: dark)">
-<link rel="canonical" href="https://claunet.cl/blog.html">
+<link rel="canonical" href="https://claunet.cl/articulo.html">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%235aaeff'/><stop offset='100%' stop-color='%231a6fff'/></linearGradient></defs><path d='M20,62 C10,62 2,54 2,44 C2,35 8,27 17,25 C17,14 26,6 37,6 C44,6 50,9 54,14 C57,9 64,6 72,6 C84,6 94,16 94,28 C95,30 96,32 96,35 C96,35 98,38 98,44 C98,53 90,62 80,62 Z' fill='url(%23g)'/><circle cx='38' cy='38' r='5' fill='white' opacity='0.9'/><circle cx='55' cy='32' r='7' fill='white' opacity='0.9'/><circle cx='72' cy='38' r='5' fill='white' opacity='0.9'/><ellipse cx='30' cy='62' rx='12' ry='7' fill='url(%23g)'/><ellipse cx='55' cy='67' rx='15' ry='8' fill='url(%23g)'/><ellipse cx='78' cy='62' rx='12' ry='7' fill='url(%23g)'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,25 +85,26 @@
 </nav>
 
 <main>
-  <!-- Mismo encabezado de sección que trabajos.html: .page-hero vive en
-       style.css y el listado lo pinta blog.js desde content/blog/. -->
-  <section class="page-hero">
-    <p class="section-label">// blog</p>
-    <h1>Notas, ideas y <em>obsesiones.</em></h1>
-    <p class="subtitle">Una selección de textos sobre música, tecnología y diseño.</p>
-  </section>
+  <!-- Ficha del artículo. articulo.js la rellena a partir del .md que pide
+       con ?slug=; el .md sigue siendo la única fuente de verdad. -->
+  <article class="article" id="article">
+    <a class="article__back" href="blog.html">← Volver al blog</a>
 
-  <section class="blog" aria-label="Listado de artículos">
-    <p class="sr-only" id="blogStatus" aria-live="polite"></p>
+    <header class="article__head" id="articleHead" hidden></header>
 
-    <div class="blog-grid" id="blogGrid" aria-busy="true">
-      <p class="blog-state">// cargando artículos…</p>
+    <div class="article__body" id="articleBody" aria-busy="true">
+      <p class="blog-state">// cargando artículo…</p>
     </div>
 
+    <footer class="article__foot" id="articleFoot" hidden>
+      <ul class="article__tags" id="articleTags"></ul>
+      <a class="article__back article__back--foot" href="blog.html">← Volver al blog</a>
+    </footer>
+
     <noscript>
-      <p class="blog-state">Este listado lee los artículos con JavaScript. Actívalo para verlos.</p>
+      <p class="blog-state">Este artículo lee su contenido con JavaScript. Actívalo para leerlo.</p>
     </noscript>
-  </section>
+  </article>
 </main>
 
 <footer class="site-footer">
@@ -186,7 +188,7 @@
 
 <script src="site.js" defer></script>
 <script src="blog-lib.js" defer></script>
-<script src="blog.js" defer></script>
+<script src="articulo.js" defer></script>
 <script src="cookie-consent.js"></script>
 </body>
 </html>
