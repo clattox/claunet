@@ -61,6 +61,12 @@ collections:
         widget: image
         required: false
 
+      - name: youtube_url
+        label: "Video de YouTube (opcional)"
+        widget: string
+        required: false
+        hint: "Pega la URL del video (ej: https://youtu.be/xxx o https://www.youtube.com/watch?v=xxx)"
+
       - name: body
         label: Contenido
         widget: markdown

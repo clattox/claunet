@@ -497,6 +497,28 @@
   color: var(--muted);
 }
 
+/* Video de YouTube (campo `youtube_url` del .md, opcional). articulo.js lo
+   inserta entre el encabezado y el cuerpo, así que hereda el mismo trato
+   que la portada: borde, radio casi recto y fondo de reserva. El 16/9 va en
+   la caja, no en el iframe: el marco ocupa siempre su proporción —la de
+   emisión de YouTube— y el video no puede provocar saltos de maquetación
+   al cargar. El iframe llena la caja y no aporta borde propio. */
+.article__video {
+  margin-bottom: clamp(1.6rem, 4vw, 2.6rem);
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--bg2);
+}
+
+.article__video iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 /* ---------- cuerpo del artículo ---------- */
 .article__body {
   margin-top: clamp(1.8rem, 4vw, 2.6rem);

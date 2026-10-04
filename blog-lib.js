@@ -7,6 +7,7 @@
      · carga de texto y codificación de rutas del CMS,
      · lectura del frontmatter (el YAML mínimo que escribe Sveltia),
      · fechas en español compuestas a mano,
+     · el video de YouTube opcional del frontmatter (`youtube_url`),
      · render de Markdown a nodos DOM, sin librerías.
 
    Se publica como window.ClauBlog. La regla de la casa se respeta
@@ -180,6 +181,7 @@
       category: typeof data.category === 'string' ? data.category.trim() : '',
       excerpt: typeof data.excerpt === 'string' ? data.excerpt.trim() : '',
       cover: typeof data.cover === 'string' ? data.cover.trim() : '',
+      youtube: typeof data.youtube_url === 'string' ? data.youtube_url.trim() : '',
       tags: tagsOf(data.tags)
     };
   }
@@ -227,6 +229,75 @@
       'C59,9 65,6 72,6 C83,6 92,15 92,26 C92,27 92,28 91,29 C96,31 100,37 100,43 C100,51 93,58 85,58 Z" ' +
       'fill="currentColor"/></svg>' +
       '<span class="' + prefix + '__placeholder-label">// ClauNet</span>';
+    return wrap;
+  }
+
+  /* ---------- video de YouTube ----------
+     Campo `youtube_url` del frontmatter, opcional. De la URL solo se saca
+     el identificador de once caracteres del video; el src del iframe se
+     compone siempre sobre https://www.youtube.com/embed/ —el único origen
+     que la CSP de vercel.json deja enmarcar—, así que ni una URL rara
+     escrita en el .md puede cambiar el origen del marco: como mucho, no
+     hay video y no se pinta nada. */
+
+  var YT_ID_RE = /^[A-Za-z0-9_-]{11}$/;
+  var YT_HOST_RE = /(^|\.)youtu\.be$|(^|\.)youtube(-nocookie)?\.com$/i;
+
+  /* Admite lo que pega cualquiera desde el botón «Compartir» de YouTube
+     —youtu.be/ID, youtube.com/watch?v=ID, /embed/ID, /shorts/ID, /live/ID—
+     y también el ID suelto. Cualquier otra cosa (otra web, un texto, un
+     ID con la longitud equivocada) devuelve cadena vacía. */
+  function youtubeId(value) {
+    var raw = String(value == null ? '' : value).trim();
+    if (!raw) return '';
+    if (YT_ID_RE.test(raw)) return raw;
+    if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(raw)) raw = 'https://' + raw.replace(/^\/+/, '');
+
+    var url;
+    try {
+      url = new URL(raw);
+    } catch (e) {
+      return '';
+    }
+    if (!YT_HOST_RE.test(url.hostname)) return '';
+
+    var parts = url.pathname.split('/').filter(Boolean);
+    var id = '';
+
+    if (/(^|\.)youtu\.be$/i.test(url.hostname)) {
+      id = parts[0] || '';
+    } else if (parts[0] === 'watch') {
+      id = url.searchParams.get('v') || '';
+    } else if (parts[0] === 'embed' || parts[0] === 'shorts' ||
+               parts[0] === 'live' || parts[0] === 'v') {
+      id = parts[1] || '';
+    }
+
+    return YT_ID_RE.test(id) ? id : '';
+  }
+
+  /* El marco del video, listo para colgar entre el encabezado y el cuerpo
+     del artículo. Devuelve null si no hay video: el que llama no tiene que
+     decidir nada, y un campo vacío no deja hueco ni marco en blanco.
+     `loading="lazy"`: el iframe —y con él las cookies de YouTube— no se
+     pide hasta que el lector se acerca a él, así que un artículo con video
+     no arrastra a terceros solo por abrirse. `title` es el nombre
+     accesible del marco; el resto del tamaño lo pone style.css con un
+     16/9, y `allowfullscreen` deja el botón de pantalla completa. */
+  function videoEmbed(url, title) {
+    var id = youtubeId(url);
+    if (!id) return null;
+
+    var frame = document.createElement('iframe');
+    frame.className = 'article__video-frame';
+    frame.src = 'https://www.youtube.com/embed/' + id;
+    frame.loading = 'lazy';
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    frame.title = title ? 'Video: ' + title : 'Video de YouTube';
+
+    var wrap = el('div', 'article__video');
+    wrap.appendChild(frame);
     return wrap;
   }
 
@@ -418,6 +489,8 @@
     postFrom: postFrom,
     revealAll: revealAll,
     placeholder: placeholder,
+    youtubeId: youtubeId,
+    videoEmbed: videoEmbed,
     renderMarkdown: renderMarkdown
   };
 })();

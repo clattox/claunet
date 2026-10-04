@@ -2,7 +2,8 @@
    ClauNet — página de artículo (articulo.html)
    Lee el slug de la URL (?slug=nombre-del-fichero), descarga su .md de
    content/blog/ y lo pinta: portada, categoría, título, fecha, cuerpo
-   (Markdown → DOM) y etiquetas. El .md es la única fuente de verdad.
+   (Markdown → DOM) y etiquetas. Si el .md trae `youtube_url`, entre el
+   encabezado y el cuerpo va su video. El .md es la única fuente de verdad.
 
    Reutiliza blog-lib.js (window.ClauBlog): frontmatter, fechas en
    español, fetch codificado, portada de reserva y render de Markdown.
@@ -102,6 +103,14 @@
     head.appendChild(B.el('h1', 'article__title', title));
     if (fecha) head.appendChild(B.el('p', 'article__date', fecha));
     head.hidden = false;
+
+    /* Video de YouTube (`youtube_url` en el .md, opcional). Va entre el
+       encabezado y el cuerpo, como hermano de los dos: fuera del cuerpo,
+       así que no lo toca el Markdown. Si el campo falta —o la URL no es
+       de YouTube— no se inserta nada y el artículo queda igual que
+       siempre: ni hueco ni marco vacío. */
+    var video = B.videoEmbed(post.youtube, title);
+    if (video) head.parentNode.insertBefore(video, body);
 
     /* Cuerpo: Markdown → nodos DOM. */
     body.innerHTML = '';
