@@ -864,7 +864,12 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
     transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
   }
 
-  /* letrero retirado (site.js, .hero fuera del viewport) */
+  /* letrero retirado: en el index lo pone site.js cuando el hero sale
+     del viewport, y en blog.html y articulo.html —páginas sin hero— ya
+     viene puesto en el propio HTML, así que ahí la placa nace retirada
+     y no vuelve. La regla vive dentro de la media query, de modo que
+     fuera de móvil no pinta nada: en escritorio el letrero sigue igual
+     en todas las páginas. */
   .radio-hang.is-off {
     opacity: 0;
     visibility: hidden;

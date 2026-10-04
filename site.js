@@ -102,7 +102,11 @@
      el enlace abre su pestaña y aquí no se finge nada: la placa nunca
      afirma que el audio suene dentro del sitio.
      Y una tercera, al final: en móvil el letrero se retira al salir del
-     hero, para no quedarse sobre el contenido (ver el bloque del hero). */
+     hero, para no quedarse sobre el contenido (ver el bloque del hero).
+     En las páginas sin hero donde la placa tampoco tiene nada que hacer
+     —blog.html y articulo.html— nace ya retirada: llevan `is-off` en el
+     propio HTML, así que aquí no hay nada que observar ni sincronizar.
+     El resto de páginas sin hero (trabajos.html) siguen como siempre. */
   var radioHang = document.querySelector('.radio-hang');
   var radioLink = document.getElementById('radioOpen');
 

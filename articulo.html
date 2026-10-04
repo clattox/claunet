@@ -138,8 +138,13 @@
      cross-origin, así que el clic abre el reproductor oficial de
      InternetFM en su propia ventana (href = el mismo reproductor que
      internetfm.com embebe en /music/acid-flashback/, con el stream
-     como parámetro; no envía X-Frame-Options ni CSP). -->
-<div class="radio-hang">
+     como parámetro; no envía X-Frame-Options ni CSP).
+     `is-off`: esta página no tiene hero, así que en móvil la placa
+     —fija bajo la barra— se quedaría clavada sobre el contenido. Nace
+     ya retirada y no vuelve. Es la misma clase de estado que site.js
+     pone y quita en el index; fuera de la media query de ≤620px no
+     pinta nada, así que en escritorio el letrero sigue igual. -->
+<div class="radio-hang is-off">
   <a class="radio-plate" id="radioOpen"
      href="https://internetfm.com/ifm-radio/ifm-player.html?stream=https%3A%2F%2Fcanada1.reliastream.com%2Fproxy%2Fafr%3Fmp%3D%2Fstream&amp;name=Acid+Flashback+Radio&amp;logo=https%3A%2F%2Finternetfm.com%2Fwp-content%2Fuploads%2Fstation-logos%2FAFR.png&amp;meta=https%3A%2F%2Fcanada1.reliastream.com%2Fproxy%2Fafr%2Fcurrentsong%3Fsid%3D1"
      target="_blank" rel="noopener external"
