@@ -77,17 +77,28 @@
      el 4,5:1 estricto, así que el bloque de móvil sube las dos primeras
      paradas del velo y lo deja en 4,77:1 (ver más abajo). Medido en
      1440/1280/393/360: 28/28 filas en AA, ninguna por debajo.
-   ▸ Solo tema claro. El velo está calculado sobre --bg del tema claro y
-     en oscuro la capa se apaga entera (display:none): ahí el hero se
-     queda con el fondo sólido de siempre. */
+   ▸ Los dos temas. La capa vive en claro y en oscuro: es la MISMA escena
+     con dos maestros, así que hereda encuadre y estructura y solo cambia
+     el velo, que toma el --bg de cada tema (claro #f5f6f8, oscuro
+     #0f0f0f). Las PARADAS del velo son las mismas en los dos temas —los
+     mismos tramos y los mismos alfas—, pero la tinta del hero no: el
+     maestro oscuro, aunque su media es muy baja (29/255 frente a 119 del
+     claro), esconde un trazo fino y brillante que cruza justo por la
+     banda del manifiesto y del párrafo. Ahí la --muted del tema
+     (#8a8a8a) no llega al 4,5:1 (3,4:1 simulado, 3,6:1 medido en 1280),
+     así que el hero oscuro también se da su propia tinta, #c8c8c8, en
+     espejo de la que el claro se da (#2f2f2f) por el mismo motivo: ganar
+     margen sobre una textura que no controla. */
 .hero {
   position: relative;
   isolation: isolate;
   /* Tinta del hero sobre la textura. En claro el texto pequeño sube a
      #2f2f2f (8,7–10,9:1 sobre el velo) y «Ideas.» usa el azul oscuro de
      marca --accent-strong (4,15–4,27:1 en escritorio, donde es texto
-     grande, y 4,77:1 en móvil); en oscuro se restauran --muted y
-     --accent, que ya cumplían sobre el fondo sólido. */
+     grande, y 4,77:1 en móvil). En oscuro el texto pequeño sube a
+     #c8c8c8 —el espejo de ese #2f2f2f, ver la nota del tema oscuro más
+     abajo— y «Ideas.» se queda con --accent (#4d8fff), que sobre el velo
+     oscuro mide 5,9:1 (texto grande, umbral 3:1). */
   --hero-ink: #2f2f2f;
   --hero-accent: var(--accent-strong);
 }
@@ -156,22 +167,87 @@
   }
 }
 
-/* En oscuro no hay imagen ni velo y la tinta vuelve a los tokens del
-   tema: el hero queda exactamente como estaba antes de la prueba.
-   Se cubren los dos caminos de tema del sitio (atributo del toggle y
-   prefers-color-scheme). */
+/* ── Tema oscuro: la misma escena en su versión de tinta oscura ──
+   No hay segundo encuadre que inventar: `claunet-hero-editorial-dark` es
+   la misma composición con el papel en negro (media 29/255 frente a 119
+   del maestro claro), así que hereda cover, el anclaje a la izquierda en
+   escritorio y el 30% en móvil, y el mismo apagado al 82%. Las paradas
+   del velo son idénticas a las del claro; solo cambia el color, que pasa
+   a --bg oscuro (#0f0f0f) en número.
+   La tinta SÍ cambia respecto a los tokens del tema. El maestro oscuro
+   no es plano: un trazo fino y brillante (pico ~90–130/255 en el maestro
+   de 1600, frente a una media de 29) cruza la banda del manifiesto y del
+   párrafo. Sobre ese trazo la --muted del tema (#8a8a8a) se queda en
+   3,4:1 (simulación) y 3,6:1 (medición real en 1280), por debajo del
+   4,5:1 del texto normal. La salida es la misma jugada que en claro, solo
+   que al revés: el hero se da su propia tinta, #c8c8c8, y «Ideas.» se
+   queda con --accent (#4d8fff). El valor no es a ojo: en claro la --muted
+   (#707070) está a 134/255 del fondo y la tinta del hero (#2f2f2f) a
+   199/255, 1,485× más lejos; aplicado al fondo oscuro (#0f0f0f) sobre la
+   --muted (#8a8a8a) eso da 15 + 1,485·123 ≈ 198, que redondeado es
+   #c8c8c8. Medido con esa tinta el peor caso sube a 6,9:1 en 1280 y 9,9:1
+   en 1440: 8/8 elementos en AA. Se cubren los dos caminos de tema del
+   sitio (atributo del toggle y prefers-color-scheme). */
 :root[data-theme="dark"] .hero {
-  --hero-ink: var(--muted);
+  --hero-ink: #c8c8c8;
   --hero-accent: var(--accent);
 }
-:root[data-theme="dark"] .hero::before { display: none; }
+:root[data-theme="dark"] .hero::before {
+  display: block;
+  background-image:
+    linear-gradient(90deg, rgba(15, 15, 15, 0.9) 0%, rgba(15, 15, 15, 0.55) 45%, rgba(15, 15, 15, 0) 82%),
+    url('previews/claunet-hero-editorial-dark-preview-1600.jpg');
+  background-image:
+    linear-gradient(90deg, rgba(15, 15, 15, 0.9) 0%, rgba(15, 15, 15, 0.55) 45%, rgba(15, 15, 15, 0) 82%),
+    image-set(url('previews/claunet-hero-editorial-dark-preview-1600.webp') type('image/webp'),
+              url('previews/claunet-hero-editorial-dark-preview-1600.jpg') type('image/jpeg'));
+}
+
+/* En móvil el velo oscuro sube en las mismas dos paradas que el claro, y
+   por el mismo motivo: al cruzar el breakpoint el manifiesto baja a
+   19,2 px, así que «Ideas.» deja de contar como texto grande y le toca el
+   4,5:1 estricto. El resto del degradado —incluido el 0 al 82%— no se
+   toca, así que las pinceladas del extremo derecho se ven igual que en
+   escritorio y que en claro. Van las dos declaraciones para que el camino
+   sin image-set() reciba también este velo. */
+@media (max-width: 620px) {
+  :root[data-theme="dark"] .hero::before {
+    background-image:
+      linear-gradient(90deg, rgba(15, 15, 15, 0.96) 0%, rgba(15, 15, 15, 0.62) 45%, rgba(15, 15, 15, 0) 82%),
+      url('previews/claunet-hero-editorial-dark-preview-1600.jpg');
+    background-image:
+      linear-gradient(90deg, rgba(15, 15, 15, 0.96) 0%, rgba(15, 15, 15, 0.62) 45%, rgba(15, 15, 15, 0) 82%),
+      image-set(url('previews/claunet-hero-editorial-dark-preview-1600.webp') type('image/webp'),
+                url('previews/claunet-hero-editorial-dark-preview-1600.jpg') type('image/jpeg'));
+  }
+}
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .hero {
-    --hero-ink: var(--muted);
+    --hero-ink: #c8c8c8;
     --hero-accent: var(--accent);
   }
-  :root:not([data-theme="light"]) .hero::before { display: none; }
+  :root:not([data-theme="light"]) .hero::before {
+    display: block;
+    background-image:
+      linear-gradient(90deg, rgba(15, 15, 15, 0.9) 0%, rgba(15, 15, 15, 0.55) 45%, rgba(15, 15, 15, 0) 82%),
+      url('previews/claunet-hero-editorial-dark-preview-1600.jpg');
+    background-image:
+      linear-gradient(90deg, rgba(15, 15, 15, 0.9) 0%, rgba(15, 15, 15, 0.55) 45%, rgba(15, 15, 15, 0) 82%),
+      image-set(url('previews/claunet-hero-editorial-dark-preview-1600.webp') type('image/webp'),
+                url('previews/claunet-hero-editorial-dark-preview-1600.jpg') type('image/jpeg'));
+  }
+  @media (max-width: 620px) {
+    :root:not([data-theme="light"]) .hero::before {
+      background-image:
+        linear-gradient(90deg, rgba(15, 15, 15, 0.96) 0%, rgba(15, 15, 15, 0.62) 45%, rgba(15, 15, 15, 0) 82%),
+        url('previews/claunet-hero-editorial-dark-preview-1600.jpg');
+      background-image:
+        linear-gradient(90deg, rgba(15, 15, 15, 0.96) 0%, rgba(15, 15, 15, 0.62) 45%, rgba(15, 15, 15, 0) 82%),
+        image-set(url('previews/claunet-hero-editorial-dark-preview-1600.webp') type('image/webp'),
+                  url('previews/claunet-hero-editorial-dark-preview-1600.jpg') type('image/jpeg'));
+    }
+  }
 }
 
 .hero-kicker {

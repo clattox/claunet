@@ -1,2 +1,9 @@
 .DS_Store
 *.DS_Store
+
+# Fuente del hero en tema oscuro. El maestro es un PNG crudo de 2,5 MB
+# (exportado por error como `…-dark.jpg.png`); el CSS solo sirve las
+# derivadas `claunet-hero-editorial-dark-preview-1600.{jpg,webp}`. Se deja
+# fuera del repo para no versionar el binario pesado; el maestro claro
+# (`claunet-hero-editorial.jpg`) sí se trackea por convención de la carpeta.
+previews/claunet-hero-editorial-dark.jpg.png
