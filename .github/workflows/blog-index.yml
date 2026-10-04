@@ -1,0 +1,50 @@
+name: Blog · índice de artículos
+
+# El panel de /admin (Sveltia CMS) publica Markdown en content/blog/ y
+# desde el navegador no puede conocerse el listado de artículos: un sitio
+# estático no permite listar directorios. Este flujo regenera
+# content/blog/index.json —la lista que lee blog.html— cada vez que se
+# publica o se edita un artículo, de modo que el listado nunca se queda
+# atrás. También corre si cambia el propio script.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/blog/**.md'
+      - 'scripts/build-blog-index.mjs'
+      - '.github/workflows/blog-index.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Regenerar el índice
+        run: node scripts/build-blog-index.mjs
+
+      - name: Publicar el índice si cambió
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet -- content/blog/index.json; then
+            echo "El índice ya estaba al día: no hay nada que publicar."
+            exit 0
+          fi
+
+          git add content/blog/index.json
+          # A propósito sin «[skip ci]»: Vercel despliega por commit y
+          # necesita este push para servir el índice nuevo. El flujo no
+          # se realimenta porque solo mira content/blog/**.md.
+          git commit -m "chore(blog): regenerar el índice de artículos"
+          git push

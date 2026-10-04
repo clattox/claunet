@@ -1,8 +1,9 @@
 /* ============================================================
-   ClauNet — trabajos + legal
+   ClauNet — trabajos + blog + legal
    Capa de página. Los tokens, el nav, el footer y las utilidades
    viven en base.css.
      .page-hero / .portfolio / .project   → trabajos.html
+     .blog / .blog-card                   → blog.html
      .legal                               → politica-de-privacidad.html
    ============================================================ */
 
@@ -193,4 +194,201 @@
 @media (max-width: 620px) {
   .project-info { padding: 1rem 1rem 1.2rem; }
   .legal { padding-top: 2.6rem; }
+}
+
+/* ===== Blog (blog.html) =====
+   El listado reutiliza .page-hero —definido arriba para trabajos— y
+   repite la retícula de .portfolio-grid. Los artículos se pintan con
+   blog.js, así que aquí solo vive la piel. */
+
+.blog {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: clamp(0.5rem, 2vw, 1.5rem) var(--gutter) clamp(4rem, 9vw, 7rem);
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.2rem, 3vw, 2rem);
+}
+
+.blog-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.25s var(--ease);
+}
+
+.blog-card:hover,
+.blog-card:focus-within { border-color: var(--accent2); }
+
+/* 16:9 para que todas las portadas canten igual, tengan el alto que
+   tengan. Si no hay imagen, la caja se queda: la retícula no se rompe. */
+.blog-card__media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.blog-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.6s var(--ease);
+}
+
+.blog-card:hover .blog-card__media img,
+.blog-card:focus-within .blog-card__media img { transform: scale(1.03); }
+
+/* Post sin portada, o portada que no carga (blog.js le pone .is-empty):
+   la nube del logotipo —el mismo <path> del nav— muy rebajada sobre
+   --bg2. Nunca un icono de imagen rota. */
+.blog-card__media.is-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blog-card__media.is-empty img { display: none; }
+
+.blog-card__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent2);
+  opacity: 0.45;
+}
+
+.blog-card__cloud {
+  width: clamp(46px, 9vw, 62px);
+  height: auto;
+  display: block;
+}
+
+.blog-card__placeholder-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 1; /* la etiqueta legible: no hereda la rebaja de la nube */
+}
+
+.blog-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.2rem 1.3rem 1.4rem;
+}
+
+/* El acento de marca en texto pequeño va en --accent-strong: #1a6fff
+   sobre #f5f6f8 se queda en ~3,9:1 y no llega a AA (base.css lo explica
+   en los tokens). Mismo azul, legible. */
+.blog-card__cat {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+}
+
+.blog-card__title {
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.blog-card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blog-card__date {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+/* Tres líneas y punto: los resúmenes de Sveltia son largos y las
+   tarjetas tienen que seguir cuadrando. */
+.blog-card__excerpt {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.blog-card__tags {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* «Leer →» cierra la tarjeta. margin-top auto lo pega al pie para que
+   todas las tarjetas de una fila lo alineen. */
+.blog-card__more {
+  margin-top: auto;
+  padding-top: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+
+.blog-card__more.is-disabled { color: var(--muted); }
+
+.blog-card__arrow {
+  display: inline-block;
+  transition: transform 0.2s var(--ease);
+}
+
+.blog-card:hover .blog-card__more:not(.is-disabled) .blog-card__arrow,
+.blog-card:focus-within .blog-card__more:not(.is-disabled) .blog-card__arrow {
+  transform: translateX(3px);
+}
+
+/* Estados: cargando y sin artículos. Mismo tono que el riel de
+   metadata para que no parezcan un error del sitio. Viven dentro de la
+   retícula, así que cruzan las dos columnas. */
+.blog-grid > .blog-state { grid-column: 1 / -1; }
+
+.blog-state {
+  padding: 2.4rem 1.4rem;
+  border: 1px dashed var(--border);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 860px) {
+  .blog-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 620px) {
+  .blog-card__body { padding: 1.05rem 1.05rem 1.25rem; }
 }
