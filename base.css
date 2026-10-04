@@ -822,41 +822,48 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   .radio-plate__eq { height: 9px; }
 }
 
-/* móvil: la placa crece un poco en alto para seguir siendo cómoda de
-   tocar; sin hover como único mecanismo, el toque siempre funciona */
+/* móvil: el letrero deja de COLGAR del nav.
+   Antes era una pieza colgante: el cordel dibujaba una liana desde el
+   borde superior del viewport —el nav tapaba su tramo de arriba— y la
+   nube quedaba a ~46px por debajo de la barra. Como el letrero es fixed,
+   esa franja (95–183px, arriba a la derecha) se quedaba clavada ahí y,
+   al hacer scroll, tapaba lo que pasara por debajo: el hero, «Sobre mí»,
+   «Ahora», el footer. Acortar el cordel no bastaba: seguía habiendo
+   liana y la nube seguía cayendo dentro del contenido.
+   En móvil se cambia el enfoque: se suprime el cordel por completo y la
+   nube se fija directamente bajo la barra, pegada al borde superior del
+   área de contenido. El nav móvil mide 94,5–95px en TODO el rango
+   (320–615px), así que ese es el punto de anclaje. La barra sigue por
+   encima (z-index 100 > 90), de modo que la nube nunca la invade.
+   Sigue siendo position: fixed real —no se mueve con el scroll—, pero
+   ya no solapa ninguna sección. No se toca el contenido: texto, enlace
+   y audio quedan igual. */
 @media (max-width: 620px) {
-  /* aquí el nav se parte en dos filas (logo + enlaces) y mide ~95px:
-     el cordel tapa eso y deja 40 a la vista. Es el largo que vale en
-     cualquier página —también en las internas, donde el titular
-     arranca justo bajo el nav y no hay hueco para colgar más abajo— */
+  /* ancla viva: la nube cuelga del cordel en escritorio; en móvil el
+     cordel desaparece y el alto del contenedor pasa a ser solo el de la
+     placa, así que basta con mover el `top` */
   .radio-hang {
-    --cord-tapa: 95px;
-    --cord-vivo: 40px;
+    top: calc(95px + 0.4rem);   /* justo bajo la barra (95px) */
+    --junta: 0px;               /* sin cordel, no hay unión que absorber */
   }
 
-  /* en el home sí hay hero: la nube cuelga solo un poco más que en la
-     base —lo justo para no quedarse pegada al nav— y así queda justo
-     BAJO la barra, arriba a la derecha, sin meterse en el bloque del
-     hero. Si el navegador no entiende :has(), se queda el largo de
-     arriba */
-  body:has(.hero) .radio-hang { --cord-vivo: 46px; }
+  /* el cordel: fuera por completo —ni liana ni punto de anclaje—, para
+     que la pieza no dependa de ningún alto colgado del viewport */
+  .radio-hang::before { display: none; }
 
-  /* La placa se encoge un punto para no competir con el contenido: sigue
-     colgada del nav arriba a la derecha —es fixed, no baja con el
-     scroll— pero pasa más desapercibida. Conserva la identidad de la
-     nube y los 40px de alto táctil. */
+  /* y la placa se encoge un punto más: sigue cómoda de tocar, pero ya no
+     compite con el contenido. Conserva la identidad de la nube. */
   .radio-plate {
     gap: 0.2rem;
-    padding: 0.42rem 0.5rem;
-    /* más pequeña que en escritorio, aún cómoda de tocar (≥40px) */
-    min-width: 126px;
-    min-height: 40px;
+    padding: 0.4rem 0.48rem;
+    min-width: 120px;
+    min-height: 38px;
   }
 
-  .radio-plate__title { font-size: 0.52rem; letter-spacing: 0.04em; }
-  .radio-plate__meta { font-size: 0.42rem; letter-spacing: 0.09em; gap: 0.28rem; }
-  .radio-plate__eq { height: 7px; }
-  .radio-plate__title--error { font-size: 0.48rem; }
+  .radio-plate__title { font-size: 0.5rem; letter-spacing: 0.04em; }
+  .radio-plate__meta { font-size: 0.4rem; letter-spacing: 0.09em; gap: 0.26rem; }
+  .radio-plate__eq { height: 6px; }
+  .radio-plate__title--error { font-size: 0.46rem; }
 }
 
 /* ===== Reveal on scroll =====
