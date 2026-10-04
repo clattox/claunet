@@ -19,13 +19,13 @@
 
 /* ===== Hero ===== */
 /* Distribución vertical: el bloque de arriba (kicker → lede) se centra en
-   el aire libre que queda POR ENCIMA del pie, y el pie (.hero-foot) se
-   ancla a la base. El sobrante de centrado —que en pantallas altas llegaba
-   a ~190px de aire muerto bajo el CTA— lo reparten los márgenes automáticos
-   de .hero-kicker (arriba) y .hero-lede (abajo). Como el bloque superior
-   absorbe la mitad de arriba, no se mueve respecto a antes: solo el pie
-   baja hasta el borde. El padding-bottom se reduce para acercar «Ver
-   trabajos» al final del hero. */
+   el aire libre que queda POR ENCIMA del pie, y el pie (.hero-foot, el riel
+   de metadata) se ancla a la base. El sobrante de centrado —que en pantallas
+   altas llegaba a ~190px de aire muerto al final del hero— lo reparten los
+   márgenes automáticos de .hero-kicker (arriba) y .hero-lede (abajo). Como
+   el bloque superior absorbe la mitad de arriba, no se mueve: solo baja el
+   pie. El padding-bottom se mantiene corto para que el riel cierre el hero
+   sin hueco muerto bajo él. */
 .hero {
   min-height: calc(100svh - var(--nav-h));
   max-width: var(--container);
@@ -83,36 +83,18 @@
   color: var(--muted);
 }
 
-/* riel de metadata + CTA sobre una misma línea de base */
+/* riel de metadata sobre su propia línea de base (sin CTA: «// proyectos»
+   ya asoma justo debajo del hero, así que no hace falta ancla de scroll).
+   El riel es el único hijo, de modo que se alinea a la izquierda y no
+   queda hueco a la derecha. */
 .hero-foot {
   margin-top: clamp(2.6rem, 7vh, 4.4rem);
   padding-top: 1.4rem;
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.2rem 2rem;
-  flex-wrap: wrap;
+  justify-content: flex-start;
 }
-
-.cta-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding-bottom: 0.35rem;
-  border-bottom: 1px solid var(--text);
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text);
-  text-decoration: none;
-  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
-}
-
-.cta-link:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
-.cta-link .cta-arrow { display: inline-block; transition: transform 0.2s var(--ease); }
-.cta-link:hover .cta-arrow { transform: translateY(2px); }
 
 /* entrada del hero */
 @keyframes fadeUp {
@@ -637,11 +619,6 @@
   }
 
   .hero-title { letter-spacing: -0.035em; }
-
-  .hero-foot {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 
   .about-body,
   .now-list { max-width: none; }
