@@ -18,17 +18,28 @@
 }
 
 /* ===== Hero ===== */
+/* Distribución vertical: el bloque de arriba (kicker → lede) se centra en
+   el aire libre que queda POR ENCIMA del pie, y el pie (.hero-foot) se
+   ancla a la base. El sobrante de centrado —que en pantallas altas llegaba
+   a ~190px de aire muerto bajo el CTA— lo reparten los márgenes automáticos
+   de .hero-kicker (arriba) y .hero-lede (abajo). Como el bloque superior
+   absorbe la mitad de arriba, no se mueve respecto a antes: solo el pie
+   baja hasta el borde. El padding-bottom se reduce para acercar «Ver
+   trabajos» al final del hero. */
 .hero {
   min-height: calc(100svh - var(--nav-h));
   max-width: var(--container);
   margin: 0 auto;
-  padding: clamp(3.5rem, 9vh, 6rem) var(--gutter) clamp(4rem, 10vh, 7rem);
+  padding: clamp(3.5rem, 9vh, 6rem) var(--gutter) clamp(2.5rem, 6vh, 4rem);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .hero-kicker {
+  /* ancla superior: absorbe la mitad del sobrante y mantiene centrado
+     el bloque de contenido (título, manifiesto, etc.) sobre el pie */
+  margin-top: auto;
   margin-bottom: clamp(1.6rem, 4vh, 2.6rem);
   font-family: var(--font-mono);
   font-size: 0.74rem;
@@ -63,6 +74,9 @@
 
 .hero-lede {
   margin-top: 2.4rem;
+  /* ancla inferior: absorbe la otra mitad del sobrante y empuja el pie
+     (.hero-foot) hasta la base del hero */
+  margin-bottom: auto;
   max-width: 46ch;
   font-size: clamp(0.95rem, 1.4vw, 1.05rem);
   line-height: 1.7;
