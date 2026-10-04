@@ -135,6 +135,37 @@ html:not(.js) .theme-toggle { display: none; }
   border-bottom: 1px solid var(--border);
 }
 
+/* Nav translúcido — SOLO tema claro.
+   Al hacer scroll la textura del hero corre por debajo de la barra; con el
+   fondo sólido (--bg) se veía una junta dura entre el nav y la textura. Un
+   velo del mismísimo --bg —#f5f6f8 al 82%— y un desenfoque de 12px dejan
+   traslucir la textura difuminada y disuelven la junta. No se toca posición,
+   alto, padding ni el borde: solo el fondo, y solo en claro. En oscuro el nav
+   sigue opaco (ahí ya se ve bien).
+   Como el velo deja pasar la brocha oscura del hero, el fondo cae a gris
+   medio en el peor punto de scroll y los enlaces (--muted, #707070) bajaban
+   a ~3,1:1 (medido 1440/393). Por eso aquí también se fija --nav-link
+   (#555555), que mantiene ≥4,5:1 sobre ese fondo con margen (4,7:1 en el
+   peor caso, 393px). El logotipo «ClauNet» no cambia (exento por WCAG).
+   Se cubren los dos caminos del tema, igual que en los tokens de arriba:
+     · [data-theme="light"]          → claro elegido a mano (JS encendido)
+     · sin atributo + sistema claro  → claro por defecto (sin JS) */
+:root[data-theme="light"] .site-nav {
+  --nav-link: #555555;
+  background: rgba(245, 246, 248, 0.82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .site-nav {
+    --nav-link: #555555;
+    background: rgba(245, 246, 248, 0.82);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+}
+
 .site-nav .nav-logo {
   display: inline-flex;
   align-items: center;
@@ -161,7 +192,11 @@ html:not(.js) .theme-toggle { display: none; }
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted);
+  /* --nav-link lo fija el velo translúcido del tema claro (ver el bloque
+     del nav, más arriba): sobre el fondo rebajado --muted (#707070) caía a
+     ~3,1:1 en el peor punto de scroll. Donde no está definido (oscuro) cae
+     a --muted, el color de siempre. El :hover sigue con --text. */
+  color: var(--nav-link, var(--muted));
   text-decoration: none;
   transition: color 0.2s var(--ease);
 }
@@ -799,26 +834,29 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
     --cord-vivo: 40px;
   }
 
-  /* en el home sí hay hero y el titular empieza más abajo: la nube
-     cuelga 20px más que en la base —lo justo para no quedarse pegada
-     al nav— pero sin llegar a dominar el hero. El hero le deja el
-     sitio por arriba (home.css) y así el titular queda a ~20px de la
-     nube. Si el navegador no entiende :has(), se queda el largo de
+  /* en el home sí hay hero: la nube cuelga solo un poco más que en la
+     base —lo justo para no quedarse pegada al nav— y así queda justo
+     BAJO la barra, arriba a la derecha, sin meterse en el bloque del
+     hero. Si el navegador no entiende :has(), se queda el largo de
      arriba */
-  body:has(.hero) .radio-hang { --cord-vivo: 60px; }
+  body:has(.hero) .radio-hang { --cord-vivo: 46px; }
 
+  /* La placa se encoge un punto para no competir con el contenido: sigue
+     colgada del nav arriba a la derecha —es fixed, no baja con el
+     scroll— pero pasa más desapercibida. Conserva la identidad de la
+     nube y los 40px de alto táctil. */
   .radio-plate {
-    gap: 0.24rem;
-    padding: 0.5rem 0.52rem;
-    /* la caja de siempre, con el alto táctil mínimo garantizado */
-    min-width: 146px;
-    min-height: 44px;
+    gap: 0.2rem;
+    padding: 0.42rem 0.5rem;
+    /* más pequeña que en escritorio, aún cómoda de tocar (≥40px) */
+    min-width: 126px;
+    min-height: 40px;
   }
 
-  .radio-plate__title { font-size: 0.58rem; letter-spacing: 0.04em; }
-  .radio-plate__meta { font-size: 0.46rem; letter-spacing: 0.09em; gap: 0.3rem; }
-  .radio-plate__eq { height: 8px; }
-  .radio-plate__title--error { font-size: 0.5rem; }
+  .radio-plate__title { font-size: 0.52rem; letter-spacing: 0.04em; }
+  .radio-plate__meta { font-size: 0.42rem; letter-spacing: 0.09em; gap: 0.28rem; }
+  .radio-plate__eq { height: 7px; }
+  .radio-plate__title--error { font-size: 0.48rem; }
 }
 
 /* ===== Reveal on scroll =====
