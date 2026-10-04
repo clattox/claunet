@@ -947,11 +947,16 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    piden 615px de los 678 que deja la fila, y «Sobre mí» se parte en dos
    líneas (comprobado con captura)— así que ahí se repite la composición
    de dos filas. El `:has` limita el cambio a las páginas cuyo nav lleva
-   ese enlace: las demás conservan siete y siguen de una fila. */
+   ese enlace: las que no lo llevan siguen de una fila.
+   El `$=` del selector es necesario porque en las secundarias el enlace
+   apunta al home —`index.html#partners`— y sin él quedaban fuera: con
+   siete rótulos (sin Blog) la fila se queda corta de 821 a 865px y
+   «Sobre mí» volvía a partirse en dos líneas (medido: 580px pedidos
+   frente a 529–554px de fila). */
 @media (min-width: 821px) and (max-width: 960px) {
-  .site-nav:has(.nav-links a[href="#partners"]) { flex-wrap: wrap; row-gap: 0.55rem; }
+  .site-nav:has(.nav-links a[href$="#partners"]) { flex-wrap: wrap; row-gap: 0.55rem; }
 
-  .site-nav:has(.nav-links a[href="#partners"]) .nav-links {
+  .site-nav:has(.nav-links a[href$="#partners"]) .nav-links {
     order: 3;
     width: 100%;
     justify-content: space-between;
