@@ -114,6 +114,14 @@
 .hero > *:nth-child(6) { animation-delay: 0.3s; }
 
 /* ===== Work — presentación editorial ===== */
+/* El hero ya cierra con su propio aire inferior (rellena el viewport,
+   centra su contenido y además lleva padding-bottom): la sección de
+   proyectos no vuelve a sumar una respiración completa encima, para que
+   «// proyectos» no quede tras un doble hueco. Ajusta SOLO el espacio
+   entre el hero y esta sección: no toca el hero ni el carrusel
+   (.work-carousel conserva intactos su pista y su min-height). */
+.work { padding-top: clamp(2rem, 4vw, 3rem); }
+
 .work-list { border-top: 1px solid var(--border); }
 
 .work-entry {
