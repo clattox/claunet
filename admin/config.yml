@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+# ---------------------------------------------------------------------------
+# ClauNet · Panel de contenido (Sveltia CMS)
+# Docs: https://sveltiacms.app/en/docs
+# ---------------------------------------------------------------------------
+
+backend:
+  name: github
+  repo: clattox/claunet
+  branch: main
+  base_url: https://claunet.cl
+  auth_endpoint: api/auth
+  # El repo es público, así que basta con public_repo (api/auth.js acepta este
+  # scope y lo pide tal cual a GitHub). Evita el «repo» por defecto de Sveltia,
+  # que daría acceso también a los repos privados de la cuenta.
+  auth_scope: public_repo
+
+# Imágenes subidas desde el panel: se guardan en previews/blog/ y se
+# referencian en el contenido como /previews/blog/<archivo>
+media_folder: previews/blog
+public_folder: /previews/blog
+
+collections:
+  - name: blog
+    label: Blog
+    label_singular: Entrada
+    folder: content/blog
+    create: true
+    identifier_field: title
+    sortable_fields: [date, title, category]
+    fields:
+      - name: title
+        label: Título
+        widget: string
+
+      - name: date
+        label: Fecha
+        widget: datetime
+        date_format: YYYY-MM-DD
+        time_format: HH:mm
+        format: YYYY-MM-DDTHH:mm:ssZ
+
+      - name: category
+        label: Categoría
+        widget: select
+        options: [Música, Tecnología, Diseño, Proyectos, Personal]
+
+      - name: tags
+        label: Etiquetas
+        widget: list
+        required: false
+
+      - name: excerpt
+        label: Resumen
+        widget: string
+        required: false
+        hint: Una o dos frases para la tarjeta del listado del blog.
+
+      - name: cover
+        label: Portada
+        widget: image
+        required: false
+
+      - name: body
+        label: Contenido
+        widget: markdown
