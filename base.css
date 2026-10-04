@@ -946,17 +946,14 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    960px la fila única también se queda corta —a 900px los ocho rótulos
    piden 615px de los 678 que deja la fila, y «Sobre mí» se parte en dos
    líneas (comprobado con captura)— así que ahí se repite la composición
-   de dos filas. El `:has` limita el cambio a las páginas cuyo nav lleva
-   ese enlace: las que no lo llevan siguen de una fila.
-   El `$=` del selector es necesario porque en las secundarias el enlace
-   apunta al home —`index.html#partners`— y sin él quedaban fuera: con
-   siete rótulos (sin Blog) la fila se queda corta de 821 a 865px y
-   «Sobre mí» volvía a partirse en dos líneas (medido: 580px pedidos
-   frente a 529–554px de fila). */
+   de dos filas. Mientras Partners fue un hash (`#partners`) el `:has`
+   limitaba el cambio a las páginas cuyo nav llevaba ese enlace; desde
+   que es página propia (`partners.html`) los seis navs del sitio son
+   idénticos —los mismos ocho rótulos—, así que va sin condición. */
 @media (min-width: 821px) and (max-width: 960px) {
-  .site-nav:has(.nav-links a[href$="#partners"]) { flex-wrap: wrap; row-gap: 0.55rem; }
+  .site-nav { flex-wrap: wrap; row-gap: 0.55rem; }
 
-  .site-nav:has(.nav-links a[href$="#partners"]) .nav-links {
+  .site-nav .nav-links {
     order: 3;
     width: 100%;
     justify-content: space-between;
@@ -968,12 +965,11 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    fila da 559px (medido). Un punto menos —el tamaño que ya usa el móvil—
    los deja en 488px. Desde 660px vuelven a 0,72rem: ahí la fila da 594px
    y piden 580px (medido).
-   El `$=` hace falta por el mismo motivo que arriba: las secundarias
-   enlazan a `index.html#partners`, así que sin él se quedaban a 0,72rem
-   y a 621px «Sobre mí» se partía en dos líneas y la nav saltaba a dos
-   filas (medido, `[1,1,1,1,1,2,1,1]`). */
+   El `$=` que hacía falta mientras el enlace era un hash sobra ya por
+   el mismo motivo: con los seis navs iguales la regla se aplica
+   siempre y el tramo se comporta como en el home. */
 @media (min-width: 621px) and (max-width: 659px) {
-  .site-nav:has(.nav-links a[href$="#partners"]) .nav-links a {
+  .site-nav .nav-links a {
     font-size: 0.62rem;
     letter-spacing: 0.1em;
     white-space: nowrap;
