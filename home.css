@@ -36,6 +36,144 @@
   justify-content: flex-start;
 }
 
+/* ===== Hero — fondo editorial (prueba reversible) =====
+   La textura de papel/cemento vive SOLO en este bloque: un ::before a
+   sangre (100vw) detrás del texto. Ni el HTML, ni el nav, ni la nube de
+   la radio, ni el botón de WhatsApp cambian una línea. Para revertir la
+   prueba basta con borrar este bloque completo: las reglas existentes de
+   .hero y de los textos siguen intactas, aquí solo se gana por
+   especificidad (.hero .algo).
+
+   ▸ Composición. La imagen (1983×793, ratio 2,5:1) es muy apaisada y el
+     hero es alto: con `cover` el recorte es siempre lateral (se ve el
+     71% del ancho en escritorio y ~25% en móvil), nunca vertical. Por
+     eso solo manda `background-position` horizontal:
+       - anclada a la IZQUIERDA el negativo limpio cae bajo el titular y
+         el texto pequeño; las pinceladas (borde derecho, esquina
+         superior derecha y barrida inferior) quedan fuera del recorte o
+         en el borde inferior derecho;
+       - anclada al centro o a la derecha la tinta entra debajo del
+         titular y de los párrafos.
+   ▸ Peso. El JPEG maestro de 1983 px pesa 475 KB y ya no lo carga el
+     CSS: se sirve un derivado de 1600 px por ancho, en WebP q80
+     (`claunet-hero-editorial-preview-1600.webp`, 137 KB, 3,5× menos) con
+     su JPEG q82 homólogo (`…-preview-1600.jpg`, 215 KB) de respaldo. El
+     maestro se queda en `previews/` como fuente, siguiendo la convención
+     `-preview` de la carpeta.
+     Ambos conservan el ratio del maestro (2,5:1), así que el recorte
+     —que depende del ratio, no del tamaño— es el mismo elija el que
+     elija el navegador. A 1600 px el hero de escritorio escala la
+     textura 1,27× (con el maestro era 1,02×) y el de móvil la reduce
+     (0,95×): sobre este grano, con el velo encima, no se aprecia; si
+     alguna vez molestara, basta con subir el derivado al ancho maestro.
+   ▸ Velo de contraste. Encima de la textura va un degradado del color de
+     página: opaco donde viven titular, manifiesto y párrafos, disuelto
+     al 82% para no borrar las pinceladas. Sin él el grano y las
+     salpicaduras dejaban el texto pequeño en 1,2–1,8:1. Con él, y con la
+     tinta del hero un punto más oscura (--hero-ink), el texto pequeño
+     mide 8,7–10,9:1 y el titular 12,0–13,0:1. El caso apretado es
+     «Ideas.»: en escritorio mide 4,15–4,27:1, pero a 30,4 px cuenta como
+     texto grande (umbral 3:1); en móvil la línea baja a 19,2 px y le toca
+     el 4,5:1 estricto, así que el bloque de móvil sube las dos primeras
+     paradas del velo y lo deja en 4,77:1 (ver más abajo). Medido en
+     1440/1280/393/360: 28/28 filas en AA, ninguna por debajo.
+   ▸ Solo tema claro. El velo está calculado sobre --bg del tema claro y
+     en oscuro la capa se apaga entera (display:none): ahí el hero se
+     queda con el fondo sólido de siempre. */
+.hero {
+  position: relative;
+  isolation: isolate;
+  /* Tinta del hero sobre la textura. En claro el texto pequeño sube a
+     #2f2f2f (8,7–10,9:1 sobre el velo) y «Ideas.» usa el azul oscuro de
+     marca --accent-strong (4,15–4,27:1 en escritorio, donde es texto
+     grande, y 4,77:1 en móvil); en oscuro se restauran --muted y
+     --accent, que ya cumplían sobre el fondo sólido. */
+  --hero-ink: #2f2f2f;
+  --hero-accent: var(--accent-strong);
+}
+
+.hero .hero-kicker,
+.hero .quote,
+.hero .hero-lede,
+.hero .meta-rail { color: var(--hero-ink); }
+
+.hero .manifesto .line-accent { color: var(--hero-accent); }
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: -1;               /* detrás del texto: el body queda detrás */
+  pointer-events: none;      /* es decorativa: no intercepta clics */
+  /* Dos capas en el mismo ::before: el velo encima (el degradado va
+     primero) y la textura debajo. El velo es --bg claro (#f5f6f8) en
+     número porque esta capa no llega a pintarse nunca en oscuro.
+     1) Respaldo: velo + JPEG.  */
+  background-image:
+    linear-gradient(90deg, rgba(245, 246, 248, 0.9) 0%, rgba(245, 246, 248, 0.55) 45%, rgba(245, 246, 248, 0) 82%),
+    url('previews/claunet-hero-editorial-preview-1600.jpg');
+  /* 2) Preferente: velo + WebP. Si el navegador no entiende image-set()
+     descarta esta declaración entera y se queda con la de arriba, así
+     que nunca llega a pedir un formato que no sepa pintar. */
+  background-image:
+    linear-gradient(90deg, rgba(245, 246, 248, 0.9) 0%, rgba(245, 246, 248, 0.55) 45%, rgba(245, 246, 248, 0) 82%),
+    image-set(url('previews/claunet-hero-editorial-preview-1600.webp') type('image/webp'),
+              url('previews/claunet-hero-editorial-preview-1600.jpg') type('image/jpeg'));
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: left center;
+}
+
+/* En móvil la ventana visible se cierra a ~un cuarto del ancho de la
+   imagen: se ancla algo a la derecha para que asomen las salpicaduras y
+   el arranque de la barrida inferior, pero sin que la tinta llegue
+   debajo del titular ni del párrafo. No es el mismo recorte que en
+   escritorio.
+   Aquí el velo además sube. Al cruzar el breakpoint el manifiesto baja a
+   19,2 px, así que «Ideas.» deja de contar como texto grande y le toca el
+   4,5:1 estricto, no el 3:1 del escritorio; con las paradas de escritorio
+   se quedaba en 4,48:1. Sube solo el primer tramo (0,96 y 0,62) y el
+   resto del degradado —incluido el 0 al 82%— no se toca, así que la
+   textura del extremo derecho se ve igual que en escritorio. Medido:
+   «Ideas.» pasa a 4,77:1 en 393 px y en 360 px (su percentil 2 y 98
+   quedan en 4,60:1 y 4,51:1, también por encima del umbral).
+   Van las dos declaraciones (respaldo y image-set) para que el camino
+   sin image-set() reciba también este velo. */
+@media (max-width: 620px) {
+  .hero::before {
+    background-position: 30% center;
+    background-image:
+      linear-gradient(90deg, rgba(245, 246, 248, 0.96) 0%, rgba(245, 246, 248, 0.62) 45%, rgba(245, 246, 248, 0) 82%),
+      url('previews/claunet-hero-editorial-preview-1600.jpg');
+    background-image:
+      linear-gradient(90deg, rgba(245, 246, 248, 0.96) 0%, rgba(245, 246, 248, 0.62) 45%, rgba(245, 246, 248, 0) 82%),
+      image-set(url('previews/claunet-hero-editorial-preview-1600.webp') type('image/webp'),
+                url('previews/claunet-hero-editorial-preview-1600.jpg') type('image/jpeg'));
+  }
+}
+
+/* En oscuro no hay imagen ni velo y la tinta vuelve a los tokens del
+   tema: el hero queda exactamente como estaba antes de la prueba.
+   Se cubren los dos caminos de tema del sitio (atributo del toggle y
+   prefers-color-scheme). */
+:root[data-theme="dark"] .hero {
+  --hero-ink: var(--muted);
+  --hero-accent: var(--accent);
+}
+:root[data-theme="dark"] .hero::before { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero {
+    --hero-ink: var(--muted);
+    --hero-accent: var(--accent);
+  }
+  :root:not([data-theme="light"]) .hero::before { display: none; }
+}
+
 .hero-kicker {
   /* ancla superior: absorbe la mitad del sobrante y mantiene centrado
      el bloque de contenido (título, manifiesto, etc.) sobre el pie */
