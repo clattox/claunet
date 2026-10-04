@@ -5,7 +5,7 @@ category: Música
 tags:
   - Pink Floyd, Syd Barrett, David Gilmour, Roger Waters, Rock, Rock progresivo, Historia de la música
 excerpt: La historia de Pink Floyd es también la historia de una transformación. Nacidos en el Londres psicodélico de los años sesenta bajo la mirada de Syd Barrett, terminaron convirtiéndose en una de las bandas más influyentes de la música del siglo XX. Entre experimentación, luces, conceptos, discos monumentales y profundas tensiones internas, este es el recorrido desde sus primeros días hasta The Final Cut.
-cover: ''
+cover: /previews/blog/Collage cósmico tributo a Pink Floyd.png
 ---
 
 Hay bandas que hacen discos.
