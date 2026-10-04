@@ -8,6 +8,7 @@
      5. Radio flotante (easter egg Acid Flashback; en móvil se retira
         cuando el hero sale del viewport)
      6. Carrusel editorial de proyectos (index · #work)
+     7. Parallax muy sutil del hero (solo escritorio y solo tema oscuro)
 
    Sin dependencias. El tema se aplica inline en el <head>
    (evita el flash de tema); aquí solo se conecta la interacción.
@@ -415,6 +416,121 @@
       carousel.classList.add('is-ready');
       render();
       armAutoplay();
+    }
+  }
+
+  /* ---------- 7. Hero — parallax muy sutil de la capa de fondo ----------
+     El fondo editorial se corre hasta 6px en X detrás del puntero y la
+     retícula decorativa la mitad en X y tres cuartos en Y (en la práctica,
+     como el puntero solo puede entrar por la caja del hero, el recorrido
+     medido es de ±4,4px en X y ±3,0px en Y: nunca se llega a los topes).
+     Solo se activa en escritorio con puntero fino, SOLO en tema oscuro
+     —donde vive la imagen editorial— y SOLO con movimiento permitido. El
+     contenido textual no se mueve nunca: el desplazamiento se escribe en
+     dos custom properties (--hero-px / --hero-py, en px) que consumen las
+     capas decorativas del hero, así que aquí no se conoce ni el encuadre
+     ni ninguna caja (ver el bloque «capa decorativa» de home.css). En las
+     páginas sin hero, o sin la capa, todo esto se queda sin efecto.
+
+     Sin bucle permanente: el rAF solo corre mientras hay movimiento real
+     —suaviza el último tramo y se apaga al clavar el destino—. Se escucha
+     en el propio hero, no en window, para no trabajar cuando la sección
+     no está bajo el puntero; y todo vuelve a su sitio al salir de ella,
+     al pasar a tema claro o al cambiar el sistema. */
+  var heroFx = document.querySelector('.hero-fx');
+  var heroBox = heroFx ? heroFx.closest('.hero') : null;
+
+  if (heroBox && heroFx) {
+    var HERO_RECORRIDO_X = 6;      /* recorrido máximo en X, en px */
+    var HERO_RECORRIDO_Y = 4;      /* recorrido máximo en Y, en px */
+    var HERO_AMORTIGUADO = 0.12;   /* fracción del trayecto que cubre cada frame */
+
+    /* puntero fino y con hover: en táctil no se activa nunca */
+    var mqAncho = window.matchMedia('(min-width: 621px) and (hover: hover) and (pointer: fine)');
+    var mqMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var mqSistemaOscuro = window.matchMedia('(prefers-color-scheme: dark)');
+
+    var rumboX = 0;      /* a dónde apunta el puntero */
+    var rumboY = 0;
+    var derivaX = 0;     /* a dónde ha llegado la capa */
+    var derivaY = 0;
+    var cuadro = 0;      /* rAF vivo (0 = ninguno corriendo) */
+
+    var temaOscuro = function () {
+      var elegido = root.getAttribute('data-theme');
+      return elegido ? elegido === 'dark' : mqSistemaOscuro.matches;
+    };
+
+    var parallaxActivo = function () {
+      return mqAncho.matches && !mqMotion.matches && temaOscuro();
+    };
+
+    var heroPinta = function () {
+      heroBox.style.setProperty('--hero-px', derivaX.toFixed(2) + 'px');
+      heroBox.style.setProperty('--hero-py', derivaY.toFixed(2) + 'px');
+    };
+
+    var heroPaso = function () {
+      derivaX += (rumboX - derivaX) * HERO_AMORTIGUADO;
+      derivaY += (rumboY - derivaY) * HERO_AMORTIGUADO;
+
+      if (Math.abs(rumboX - derivaX) < 0.05 && Math.abs(rumboY - derivaY) < 0.05) {
+        derivaX = rumboX;
+        derivaY = rumboY;
+        heroPinta();
+        cuadro = 0;
+        return;
+      }
+
+      heroPinta();
+      cuadro = requestAnimationFrame(heroPaso);
+    };
+
+    var heroArranca = function () {
+      if (!cuadro) { cuadro = requestAnimationFrame(heroPaso); }
+    };
+
+    var heroMueve = function (e) {
+      if (!parallaxActivo()) { return; }
+
+      /* el puntero se normaliza a −1…1 en cada eje y la capa se corre en
+         sentido contrario: cuanto más a la derecha se mira, más a la
+         izquierda se queda el fondo —el gesto de mirar por la ventana */
+      var nx = (e.clientX / window.innerWidth) * 2 - 1;
+      var ny = (e.clientY / window.innerHeight) * 2 - 1;
+
+      rumboX = -nx * HERO_RECORRIDO_X;
+      rumboY = -ny * HERO_RECORRIDO_Y;
+      heroArranca();
+    };
+
+    var heroVuelve = function () {
+      rumboX = 0;
+      rumboY = 0;
+      heroArranca();
+    };
+
+    /* cualquier cambio de entorno que apague el efecto devuelve la capa
+       a su sitio (y con ella el encuadre de reposo) */
+    var heroRevisa = function () {
+      if (!parallaxActivo()) { heroVuelve(); }
+    };
+
+    heroBox.addEventListener('mousemove', heroMueve, { passive: true });
+    heroBox.addEventListener('mouseleave', heroVuelve);
+
+    /* el tema solo cambia en el botón; el resto de condiciones, en sus
+       media queries (incluido un viewport que cruza los 620px) */
+    if (toggle) { toggle.addEventListener('click', heroRevisa); }
+
+    if (mqAncho.addEventListener) {
+      mqAncho.addEventListener('change', heroRevisa);
+      mqMotion.addEventListener('change', heroRevisa);
+      mqSistemaOscuro.addEventListener('change', heroRevisa);
+    } else {                      /* Safari viejo */
+      mqAncho.addListener(heroRevisa);
+      mqMotion.addListener(heroRevisa);
+      mqSistemaOscuro.addListener(heroRevisa);
     }
   }
 })();

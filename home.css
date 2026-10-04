@@ -101,6 +101,24 @@
      oscuro mide 5,9:1 (texto grande, umbral 3:1). */
   --hero-ink: #2f2f2f;
   --hero-accent: var(--accent-strong);
+
+  /* Tinta de los efectos decorativos (líneas técnicas, marcas, grano y
+     barrido). Se dan como canales + alfa, y todos pasan por --fx-factor:
+     así el bloque de móvil baja la intensidad de golpe —sin repetir
+     colores ni pelear con la cascada de temas— y el tema oscuro solo
+     cambia los números. */
+  --fx-rgb: 26, 111, 255;
+  --fx-a-line: 0.12;
+  --fx-a-soft: 0.07;
+  --fx-a-dot: 0.22;
+  --fx-grano-a: 0.09;
+  --fx-barrido-a: 0.4;
+  --fx-factor: 1;
+  --fx-line: rgba(var(--fx-rgb), calc(var(--fx-a-line) * var(--fx-factor)));
+  --fx-line-soft: rgba(var(--fx-rgb), calc(var(--fx-a-soft) * var(--fx-factor)));
+  --fx-dot: rgba(var(--fx-rgb), calc(var(--fx-a-dot) * var(--fx-factor)));
+  --fx-grano: calc(var(--fx-grano-a) * var(--fx-factor));
+  --fx-barrido: calc(var(--fx-barrido-a) * var(--fx-factor));
 }
 
 .hero .hero-kicker,
@@ -137,6 +155,10 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: left center;
+  /* entrada del fondo (Efecto 6): un fundido corto que arranca en el
+     mismo compás que los títulos. Con prefers-reduced-motion base.css
+     apaga la animación y la textura queda estática, ya a la vista. */
+  animation: hero-bg-in 0.9s var(--ease) both;
 }
 
 /* En móvil la ventana visible se cierra a ~un cuarto del ancho de la
@@ -191,6 +213,15 @@
 :root[data-theme="dark"] .hero {
   --hero-ink: #c8c8c8;
   --hero-accent: var(--accent);
+  /* los efectos decorativos suben un punto en oscuro: sobre tinta negra
+     una línea al 12% se pierde, y el azul de marca claro (120, 182, 255)
+     lee mejor que el oscuro del tema claro */
+  --fx-rgb: 120, 182, 255;
+  --fx-a-line: 0.2;
+  --fx-a-soft: 0.11;
+  --fx-a-dot: 0.34;
+  --fx-grano-a: 0.12;
+  --fx-barrido-a: 0.55;
 }
 :root[data-theme="dark"] .hero::before {
   display: block;
@@ -226,6 +257,12 @@
   :root:not([data-theme="light"]) .hero {
     --hero-ink: #c8c8c8;
     --hero-accent: var(--accent);
+    --fx-rgb: 120, 182, 255;
+    --fx-a-line: 0.2;
+    --fx-a-soft: 0.11;
+    --fx-a-dot: 0.34;
+    --fx-grano-a: 0.12;
+    --fx-barrido-a: 0.55;
   }
   :root:not([data-theme="light"]) .hero::before {
     display: block;
@@ -249,6 +286,46 @@
     }
   }
 }
+
+/* ── Deriva del puntero (solo escritorio y solo tema oscuro) ──
+   Este bloque NO cambia el encuadre en reposo: la capa a sangre se
+   ensancha 12px por lado —que quedan fuera de la ventana y recorta la
+   guarda del desborde, unas líneas más abajo— y la posición de fondo sube
+   esos mismos 12px, de modo que la textura sigue anclada exactamente al
+   borde izquierdo de siempre. El desplazamiento (--hero-px, lo escribe
+   site.js) va con transform: mueve la capa entera, así que `cover` no
+   puede dejar hueco por ningún lado. El eje Y no se toca a propósito: con
+   estas proporciones `cover` no deja holgura vertical y arrastrar la
+   textura dejaría una franja sin imagen en el borde inferior del hero. La
+   profundidad la da .hero-fx, que sí se mueve en los dos ejes dentro de la
+   sección. */
+@media (min-width: 621px) {
+  :root[data-theme="dark"] .hero::before {
+    width: calc(100vw + 24px);
+    background-position: 12px center;
+    transform: translate3d(calc(-50% + var(--hero-px, 0px)), 0, 0);
+  }
+}
+
+@media (min-width: 621px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero::before {
+    width: calc(100vw + 24px);
+    background-position: 12px center;
+    transform: translate3d(calc(-50% + var(--hero-px, 0px)), 0, 0);
+  }
+}
+
+/* ── Guarda del desborde ──
+   La capa a sangre del hero se pasa 12px por cada lado —y site.js la corre
+   hasta 6px más— para no dejar nunca una tira sin textura al moverla. Ese
+   sobrante se recorta aquí, en main, y no en el hero: recortar el hero
+   cortaría la propia textura a sangre. Solo actúa en el eje X (el Y sigue
+   visible, así que ni el anclaje ni el scroll notan nada) y las piezas
+   fijas del sitio —radio y WhatsApp— viven fuera de main, de modo que
+   tampoco las roza. Si el navegador no entiende `overflow: clip` la regla
+   se descarta y la página queda como estaba: el sobrante lo recorta el
+   viewport, que ya lleva overflow-x: hidden en base.css. */
+main { overflow-x: clip; }
 
 .hero-kicker {
   /* ancla superior: absorbe la mitad del sobrante y mantiene centrado
@@ -310,18 +387,164 @@
   justify-content: flex-start;
 }
 
-/* entrada del hero */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+/* ===== Hero — capa decorativa (los efectos «vivos») =====
+   Cuatro capas detrás del contenido, todas inertes (pointer-events: none)
+   y todas por debajo del texto (z-index negativo dentro del contexto
+   aislado del hero), así que no estorban a nada: ni a la selección de
+   texto, ni a los clics, ni a la navegación, ni a la radio, ni al
+   WhatsApp, ni al conmutador de tema.
+     .hero::before      textura editorial de siempre — aquí solo se le anima la deriva
+     .hero-fx::before   líneas técnicas: dos hairlines, un trazo vertical y dos marcas
+     .hero-fx::after    barrido azul ocasional sobre la hairline larga
+     .hero::after       grano: una baldosa SVG en línea, sin imágenes nuevas
+   El parallax solo escribe --hero-px / --hero-py, y solo desde site.js en
+   escritorio oscuro: en móvil y en claro valen 0 y no se pinta distinto. */
+
+/* La capa decorativa es el hero menos un canto: así un desplazamiento de
+   6px nunca asoma fuera de la sección (ni bajo la barra ni sobre
+   «// proyectos») y no hay nada que recortar. Va en 3D para que el
+   desplazamiento se componga en la GPU en vez de repintar el fondo; los
+   dos ejes llevan fracciones distintas (0,5 en X y 0,75 en Y) para que la
+   retícula no quede pegada a la textura: las líneas se quedan más firmes
+   que el papel, que es el que más se mueve. */
+.hero-fx {
+  position: absolute;
+  inset: 8px 10px;
+  z-index: -1;
+  pointer-events: none;
+  transform: translate3d(calc(var(--hero-px, 0px) * 0.5), calc(var(--hero-py, 0px) * 0.75), 0);
+}
+
+/* Líneas técnicas: cinco capas de fondo en un único pseudo-elemento —sin
+   SVG, sin imágenes y sin nodos extra—, todas ancladas al borde derecho
+   de la retícula, que es donde la composición editorial deja aire. La
+   hairline larga tiende una regla por el centro del hero, la corta cierra
+   el bloque antes del riel de metadata, el trazo vertical acompaña a la
+   línea azul de la imagen y las dos marcas cuadradas rematan los trazos
+   horizontales. Las dos alturas (45% y 77%) están elegidas sobre la
+   geometría medida —escaneo de tinta por filas en 1280, 1440 y 1680 de
+   escritorio y en 360 y 393 de móvil—: caen en huecos sin letras en la
+   mitad derecha en todos esos tamaños, así que ninguna línea pasa por
+   debajo de una palabra. Todas nacen con un degradado a transparente,
+   así que más que líneas parecen un rastro: no hay ningún canto duro que
+   compita con el titular. */
+.hero-fx::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--fx-dot), var(--fx-dot)),
+    linear-gradient(var(--fx-dot), var(--fx-dot)),
+    linear-gradient(90deg, rgba(var(--fx-rgb), 0) 0%, var(--fx-line) 26%, var(--fx-line) 100%),
+    linear-gradient(90deg, rgba(var(--fx-rgb), 0) 0%, var(--fx-line-soft) 34%, var(--fx-line-soft) 100%),
+    linear-gradient(180deg, rgba(var(--fx-rgb), 0) 0%, var(--fx-line-soft) 22%, var(--fx-line-soft) 100%);
+  background-size: 3px 3px, 3px 3px, 48% 1px, 32% 1px, 1px 22%;
+  background-position: 100% 45%, 100% 77%, 100% 45%, 100% 77%, 100% 28%;
+  background-repeat: no-repeat;
+  animation: hero-fx-in 1.1s var(--ease) 0.18s both;
+}
+
+/* Barrido azul: un tramo de luz que recorre la hairline larga de vez en
+   cuando —2,6s de viaje cada 26s—, lineal y muy tenue. Se anima la
+   POSICIÓN del degradado sobre un trazo de 1px de alto, así que el
+   repintado es mínimo y no hace falta ni un nodo más. La pausa larga y la
+   opacidad baja lo dejan en detalle técnico accidental, no en un láser.
+   La opacidad base es 0: sin animación (prefers-reduced-motion) el
+   barrido simplemente no existe. */
+.hero-fx::after {
+  content: '';
+  position: absolute;
+  top: 45%;                 /* la misma altura que la hairline larga */
+  left: 52%;
+  right: 0;
+  height: 1px;
+  background-image: linear-gradient(90deg,
+    rgba(160, 210, 255, 0) 0%, rgba(160, 210, 255, 0) 42%,
+    rgba(160, 210, 255, 0.85) 50%,
+    rgba(160, 210, 255, 0) 58%, rgba(160, 210, 255, 0) 100%);
+  background-repeat: no-repeat;
+  background-size: 260% 100%;
+  background-position: 100% 0;
+  opacity: 0;
+  animation: hero-barrido 26s linear infinite;
+}
+
+/* Grano: una sola baldosa SVG en línea (feTurbulence, ~250 bytes) que se
+   repite por todo el ancho visible; ni imágenes nuevas ni lienzos. Con
+   overlay no ensucia los negros, solo deja la textura con un punto de
+   vida imposible de identificar. Es la última capa decorativa: va por
+   encima de las líneas y por debajo del contenido. */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: -1;
+  pointer-events: none;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27140%27 height=%27140%27%3E%3Cfilter id=%27g%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%27.85%27 numOctaves=%272%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27140%27 height=%27140%27 filter=%27url(%23g)%27/%3E%3C/svg%3E');
+  background-size: 140px 140px;
+  opacity: var(--fx-grano);
+  mix-blend-mode: overlay;
+  animation: hero-grano-in 1.2s var(--ease) 0.28s both;
+}
+
+/* ===== Hero — entrada (una sola coreografía) =====
+   Cada bloque entra desde 10px abajo con opacidad 0 → 1 y un escalón algo
+   mayor que el anterior, en el orden de lectura: kicker → titular →
+   manifiesto → cita → descripción → riel de metadata. Es el sistema de
+   entrada que ya existía (fadeUp + nth-child), ajustado: menos recorrido
+   (10px frente a 16), un pelo más de duración (0,8s) para que el gesto se
+   lea sobre la textura oscura, y escalones de 0,04 a 0,5s. El escalón
+   viaja ahora en --hero-in —como en las utilidades .reveal— para que
+   sobreviva a reordenamientos y para que la capa decorativa no consuma un
+   puesto en la fila. La curva es la del sitio (--ease). */
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.hero > * { animation: fadeUp 0.7s var(--ease) both; }
-.hero > *:nth-child(2) { animation-delay: 0.06s; }
-.hero > *:nth-child(3) { animation-delay: 0.12s; }
-.hero > *:nth-child(4) { animation-delay: 0.18s; }
-.hero > *:nth-child(5) { animation-delay: 0.24s; }
-.hero > *:nth-child(6) { animation-delay: 0.3s; }
+/* entrada del fondo y de los adornos, en el mismo compás */
+@keyframes hero-bg-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes hero-fx-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes hero-grano-in {
+  from { opacity: 0; }
+  to   { opacity: var(--fx-grano); }
+}
+
+@keyframes hero-barrido {
+  0%, 80%  { opacity: 0; background-position: 100% 0; }
+  82%      { opacity: var(--fx-barrido); }
+  90%      { opacity: 0; background-position: 0% 0; }
+  100%     { opacity: 0; background-position: 0% 0; }
+}
+
+.hero > .hero-kicker,
+.hero > .hero-title,
+.hero > .manifesto,
+.hero > .quote,
+.hero > .hero-lede,
+.hero > .hero-foot {
+  animation: hero-in 0.8s var(--ease) both;
+  animation-delay: var(--hero-in, 0s);
+}
+
+.hero > .hero-kicker { --hero-in: 0.04s; }
+.hero > .hero-title  { --hero-in: 0.12s; }
+.hero > .manifesto   { --hero-in: 0.22s; }
+.hero > .quote       { --hero-in: 0.32s; }
+.hero > .hero-lede   { --hero-in: 0.4s; }
+.hero > .hero-foot   { --hero-in: 0.5s; }
 
 /* ===== Work — presentación editorial ===== */
 /* El hero ya cierra con su propio aire inferior (rellena el viewport,
@@ -830,6 +1053,12 @@
        ~205px, así que el hero empieza justo después y el titular
        queda a un palmo de ella —aire de sobra, sin hueco muerto */
     padding: 5.75rem var(--gutter) 4rem;
+    /* efectos decorativos a media intensidad: en una pantalla estrecha el
+       titular manda y la retícula técnica solo debe intuirse. Con este
+       factor bajan a la vez líneas, marcas, grano y barrido. El parallax
+       aquí no existe —site.js no escribe las variables—, así que el
+       fondo se queda quieto. */
+    --fx-factor: 0.55;
   }
 
   .hero-title { letter-spacing: -0.035em; }
@@ -848,4 +1077,16 @@
   .work-media { aspect-ratio: 4 / 3; }
   .work-facts { gap: 0.35rem 0.9rem; }
   .lab-head .status-pill { margin-left: 0; }
+}
+
+/* ===== Hero — movimiento reducido =====
+   base.css ya apaga TODA animación y transición del sitio (entradas de
+   texto, fundido del fondo, barrido, deriva), así que los títulos
+   aparecen directamente y la textura se ve estática desde el primer
+   frame. Aquí se retira además la capa decorativa: en este modo el hero
+   se queda en el fondo editorial y nada más, sin líneas, marcas ni
+   grano sobre la imagen. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-fx,
+  .hero::after { display: none; }
 }
