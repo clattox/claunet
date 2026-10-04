@@ -5,7 +5,8 @@
      2. Aparición progresiva de .reveal (IntersectionObserver)
      3. Fallback de imágenes cuando una preview no carga
      4. Retiro del WhatsApp flotante al llegar al footer
-     5. Radio flotante (easter egg Acid Flashback)
+     5. Radio flotante (easter egg Acid Flashback; en móvil se retira
+        cuando el hero sale del viewport)
      6. Carrusel editorial de proyectos (index · #work)
 
    Sin dependencias. El tema se aplica inline en el <head>
@@ -98,7 +99,9 @@
      ventana compacta y reutilizable, y un estado honesto («abriendo
      radio…» → «↗ radio externa»). Si el navegador bloquea la ventana,
      el enlace abre su pestaña y aquí no se finge nada: la placa nunca
-     afirma que el audio suene dentro del sitio. */
+     afirma que el audio suene dentro del sitio.
+     Y una tercera, al final: en móvil el letrero se retira al salir del
+     hero, para no quedarse sobre el contenido (ver el bloque del hero). */
   var radioHang = document.querySelector('.radio-hang');
   var radioLink = document.getElementById('radioOpen');
 
@@ -199,6 +202,61 @@
          pestaña y la placa solo refleja el estado */
       radioNotice();
     });
+
+    /* ---- el letrero se retira al salir del hero (solo móvil) ----
+       En el index la placa cuelga bajo la barra, sobre el hero; al bajar
+       a «// proyectos» esa franja queda encima del contenido. Así que en
+       pantallas estrechas el letrero se desvanece en cuanto el hero
+       termina de salir del viewport y vuelve al subir. Mismo patrón que
+       el WhatsApp flotante: IntersectionObserver + una clase de estado
+       que resuelve el CSS. En escritorio la clase no se añade nunca, y
+       en las páginas sin hero (.hero no existe) el letrero se comporta
+       como siempre. */
+    var hero = document.querySelector('.hero');
+    var mqMovil = window.matchMedia('(max-width: 620px)');
+    var heroVisible = true;
+    var heroIO = null;
+
+    /* el estado del hero manda; la clase solo entra en móvil */
+    var syncLetrero = function () {
+      radioHang.classList.toggle('is-off', mqMovil.matches && !heroVisible);
+    };
+
+    if (hero && 'IntersectionObserver' in window) {
+      /* estado real de entrada: recargar a media página no hace
+         parpadear al letrero —arranca ya retirado si toca— */
+      heroVisible = (function () {
+        var caja = hero.getBoundingClientRect();
+        return caja.bottom > 0 && caja.top < window.innerHeight;
+      })();
+
+      heroIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { heroVisible = entry.isIntersecting; });
+        syncLetrero();
+      }, { threshold: 0 });
+
+      heroIO.observe(hero);
+      syncLetrero();
+
+      /* el fundido entra un frame después, y nunca en el mismo cálculo
+         de estilos que el estado inicial: si la página arranca con el
+         hero ya fuera del viewport (recarga a media página, enlace con
+         ancla), el letrero nace retirado de golpe en vez de desvanecerse
+         a la vista. La lectura de offsetWidth fuerza ese cálculo de
+         estilos; lo que venga después sí va suave. La clase es inerte
+         fuera de móvil: la transición solo existe en esa media query. */
+      radioHang.offsetWidth;   /* fuerza el cálculo de estilos */
+      requestAnimationFrame(function () { radioHang.classList.add('is-live'); });
+    }
+
+    /* girar el teléfono o cruzar los 620px rehace la cuenta: en
+       escritorio la clase no pinta nada y se retira; en móvil el
+       letrero recupera el estado que el hero tenga en ese momento */
+    if (heroIO) {
+      var radioOnMq = function () { syncLetrero(); };
+      if (mqMovil.addEventListener) { mqMovil.addEventListener('change', radioOnMq); }
+      else if (mqMovil.addListener) { mqMovil.addListener(radioOnMq); }  /* Safari viejo */
+    }
   }
 
   /* ---------- 6. Carrusel editorial de proyectos (index · #work) ----------

@@ -837,7 +837,12 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    encima (z-index 100 > 90), de modo que la nube nunca la invade.
    Sigue siendo position: fixed real —no se mueve con el scroll—, pero
    ya no solapa ninguna sección. No se toca el contenido: texto, enlace
-   y audio quedan igual. */
+   y audio quedan igual.
+   Y como aquí la pieza sí queda sobre el contenido al hacer scroll, se
+   retira al llegar a «// proyectos»: site.js le pone .is-off cuando el
+   hero termina de salir del viewport y la clase la desvanece (0,3s) y
+   la saca del camino táctil. Al volver al hero reaparece. Todo esto
+   vive SOLO aquí: en escritorio el letrero sigue igual que siempre. */
 @media (max-width: 620px) {
   /* ancla viva: la nube cuelga del cordel en escritorio; en móvil el
      cordel desaparece y el alto del contenedor pasa a ser solo el de la
@@ -845,6 +850,25 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
   .radio-hang {
     top: calc(95px + 0.4rem);   /* justo bajo la barra (95px) */
     --junta: 0px;               /* sin cordel, no hay unión que absorber */
+  }
+
+  /* el fundido al salir del hero: solo opacidad y visibilidad —la
+     oscilación de la pieza usa transform, así que no se toca—. Con
+     visibilidad en la transición el enlace deja de ser alcanzable con
+     Tab justo al terminar el fundido, no antes.
+     La transición llega un frame después de cargar (site.js añade
+     .is-live): así una recarga a media página no pilla al letrero
+     desvaneciéndose —nace ya retirado— y solo los cambios que siguen
+     van suaves */
+  .radio-hang.is-live {
+    transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
+  }
+
+  /* letrero retirado (site.js, .hero fuera del viewport) */
+  .radio-hang.is-off {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   /* el cordel: fuera por completo —ni liana ni punto de anclaje—, para
