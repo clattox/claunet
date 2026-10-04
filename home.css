@@ -131,8 +131,8 @@
   color: inherit;
 }
 
-/* ritmo: las entradas pares invierten la composición en desktop */
-.work-entry:nth-child(even) .work-media { order: -1; }
+/* ritmo: las entradas impares invierten la composición en desktop */
+.work-entry:nth-child(odd) .work-media { order: -1; }
 
 /* evita que el texto desborde la columna del grid */
 .work-body { min-width: 0; }
@@ -594,7 +594,7 @@
     align-items: start;
   }
 
-  .work-entry:nth-child(even) .work-media { order: 0; }
+  .work-entry:nth-child(odd) .work-media { order: 0; }
   .work-desc,
   .work-facts { max-width: 60ch; }
 
