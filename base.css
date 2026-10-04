@@ -967,9 +967,13 @@ html:has(.cookie-banner:not(.cookie-hidden)) .wa-float,
    tampoco caben en su propia fila a 0,72rem: a 621px piden 573px y la
    fila da 559px (medido). Un punto menos —el tamaño que ya usa el móvil—
    los deja en 488px. Desde 660px vuelven a 0,72rem: ahí la fila da 594px
-   y piden 580px (medido). */
+   y piden 580px (medido).
+   El `$=` hace falta por el mismo motivo que arriba: las secundarias
+   enlazan a `index.html#partners`, así que sin él se quedaban a 0,72rem
+   y a 621px «Sobre mí» se partía en dos líneas y la nav saltaba a dos
+   filas (medido, `[1,1,1,1,1,2,1,1]`). */
 @media (min-width: 621px) and (max-width: 659px) {
-  .site-nav:has(.nav-links a[href="#partners"]) .nav-links a {
+  .site-nav:has(.nav-links a[href$="#partners"]) .nav-links a {
     font-size: 0.62rem;
     letter-spacing: 0.1em;
     white-space: nowrap;
