@@ -569,8 +569,11 @@ main { overflow-x: clip; }
   color: inherit;
 }
 
-/* ritmo: las entradas impares invierten la composición en desktop */
-.work-entry:nth-child(odd) .work-media { order: -1; }
+/* ritmo: una entrada sí y otra no invierten la composición en desktop.
+   La pauta cae en las ENTRADAS PARES porque la lista abre con AgendaCar
+   (01): así cada proyecto conserva el lado que ya tenía —Dojo sigue a la
+   izquierda, Mardanza a la derecha, etc.— sin tocar su HTML. */
+.work-entry:nth-child(even) .work-media { order: -1; }
 
 /* evita que el texto desborde la columna del grid */
 .work-body { min-width: 0; }
@@ -1119,7 +1122,7 @@ main { overflow-x: clip; }
     align-items: start;
   }
 
-  .work-entry:nth-child(odd) .work-media { order: 0; }
+  .work-entry:nth-child(even) .work-media { order: 0; }
   .work-desc,
   .work-facts { max-width: 60ch; }
 
