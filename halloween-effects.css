@@ -249,25 +249,29 @@ html.halloween-active[data-theme="dark"] {
 }
 
 /* ── Calabaza ──
-   Vive en la esquina inferior izquierda, dentro del aire del
-   padding del hero: debajo del riel de metadata, nunca sobre el
-   texto y lejos del WhatsApp (que ocupa la esquina opuesta). La luz
-   cálida es un resplandor estático que respira muy despacio. */
+   Un objeto de verdad en la esquina inferior izquierda del hero,
+   apoyado en su borde inferior: debajo del riel de metadata, nunca
+   sobre el texto y lejos del WhatsApp (que ocupa la esquina opuesta).
+   El ancho se deduce del margen que la página deja FUERA de la
+   columna de texto (--container): con la página muy ancha el margen
+   sobra y la calabaza crece hasta 104px; en cuanto el margen se
+   cierra se queda en 48px, de modo que su borde derecho nunca alcanza
+   el riel de metadata. La luz cálida respira muy despacio. */
 .halloween-pumpkin {
   position: absolute;
-  bottom: 4px;
-  left: var(--gutter);
-  width: 34px;
+  bottom: 0;
+  left: calc(var(--gutter) - 6px);
+  width: clamp(48px, calc((100vw - var(--container)) / 2 - 8px), 104px);
   color: var(--halloween-pumpkin);
-  filter: drop-shadow(0 0 9px var(--halloween-pumpkin-glow));
+  filter: drop-shadow(0 0 16px var(--halloween-pumpkin-glow));
   animation: halloween-pumpkin-glow 5.8s ease-in-out infinite;
 }
 
 .halloween-pumpkin svg { display: block; width: 100%; height: auto; }
 
 @keyframes halloween-pumpkin-glow {
-  0%, 100% { opacity: 0.82; filter: drop-shadow(0 0 7px var(--halloween-pumpkin-glow)); }
-  50%      { opacity: 1; filter: drop-shadow(0 0 13px var(--halloween-pumpkin-glow)); }
+  0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 12px var(--halloween-pumpkin-glow)); }
+  50%      { opacity: 1; filter: drop-shadow(0 0 22px var(--halloween-pumpkin-glow)); }
 }
 
 /* ── Araña descendiendo ──
@@ -455,7 +459,10 @@ html.halloween-active[data-theme="dark"] {
   .halloween-spark--a { width: 10px; right: 9%; }
   .halloween-spark--b { width: 7px; right: 20%; }
 
-  .halloween-pumpkin { width: 30px; bottom: 3px; }
+  /* En móvil la calabaza se lleva al ancho del aire que queda bajo el
+     riel de metadata (63px a 393/360/320): 58px es lo máximo que cabe
+     sin tocar el texto, y aun así dobla el tamaño anterior. */
+  .halloween-pumpkin { width: 58px; left: calc(var(--gutter) - 4px); }
 
   .halloween-radio-web {
     top: -6px;
@@ -483,6 +490,13 @@ html.halloween-active[data-theme="dark"] {
   .halloween-bats,
   .halloween-spider { display: none; }
 
-  .halloween-pumpkin,
+  /* la calabaza conserva la luz —fija, sin respiración— porque es lo
+     que la hace legible como objeto; los destellos se quedan en su
+     opacidad base */
+  .halloween-pumpkin {
+    animation: none;
+    filter: drop-shadow(0 0 14px var(--halloween-pumpkin-glow));
+  }
+
   .halloween-spark { filter: none; }
 }
