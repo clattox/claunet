@@ -1,0 +1,488 @@
+/* ============================================================
+   ClauNet — Halloween Special Edition 2026
+   Capa decorativa temporal «ClauNet Haunted Lab».
+
+   Es una capa INDEPENDIENTE y reversible: todo vive bajo la clase
+   `halloween-active` en <html>, todas las clases llevan el prefijo
+   `halloween-` y ningún componente permanente se reescribe.
+   Para retirar la temporada basta con borrar este archivo,
+   `halloween-effects.js` y sus dos etiquetas (<link> + <script>)
+   en cada página.
+
+   La decoración la construye halloween-effects.js: aquí solo se
+   define cómo se ve y cómo se mueve. Nada de esta hoja se pinta si
+   la clase no está puesta.
+   ============================================================ */
+
+/* ===== Tokens de la temporada =====
+   Se apoyan en los tokens permanentes del sitio (--accent, --bg,
+   --muted…) y añaden solo lo que es propio del laboratorio: el
+   violeta del ecualizador, la naranja cálida de la calabaza y la
+   tinta de murciélagos y telarañas. En oscuro suben de luminosidad
+   para no desaparecer sobre el fondo. */
+html.halloween-active {
+  --halloween-violet: #7c3aed;
+  --halloween-violet-soft: rgba(124, 58, 237, 0.55);
+  --halloween-pumpkin: #f08a17;
+  --halloween-pumpkin-light: #fbbf24;
+  --halloween-pumpkin-glow: rgba(240, 138, 23, 0.42);
+  --halloween-bat: #24243a;
+  --halloween-web: rgba(17, 17, 17, 0.4);
+  --halloween-glow: rgba(90, 174, 255, 0.55);
+  --halloween-note-shadow: rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  html.halloween-active:not([data-theme="light"]) {
+    --halloween-violet: #a78bfa;
+    --halloween-violet-soft: rgba(167, 139, 250, 0.6);
+    --halloween-pumpkin: #f59e0b;
+    --halloween-pumpkin-light: #fcd34d;
+    --halloween-pumpkin-glow: rgba(245, 158, 11, 0.4);
+    --halloween-bat: #b9b4d8;
+    --halloween-web: rgba(200, 196, 224, 0.42);
+    --halloween-glow: rgba(106, 163, 255, 0.6);
+    --halloween-note-shadow: rgba(0, 0, 0, 0.5);
+  }
+}
+
+html.halloween-active[data-theme="dark"] {
+  --halloween-violet: #a78bfa;
+  --halloween-violet-soft: rgba(167, 139, 250, 0.6);
+  --halloween-pumpkin: #f59e0b;
+  --halloween-pumpkin-light: #fcd34d;
+  --halloween-pumpkin-glow: rgba(245, 158, 11, 0.4);
+  --halloween-bat: #b9b4d8;
+  --halloween-web: rgba(200, 196, 224, 0.42);
+  --halloween-glow: rgba(106, 163, 255, 0.6);
+  --halloween-note-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* Las capas decorativas nunca capturan el puntero: el clic, la
+   selección de texto y la navegación siguen siendo del sitio. */
+.halloween-ghost,
+.halloween-ghost-bubble,
+.halloween-hero,
+.halloween-bats,
+.halloween-bat,
+.halloween-pumpkin,
+.halloween-spider,
+.halloween-spark,
+.halloween-web,
+.halloween-radio-web,
+.halloween-radio-note {
+  pointer-events: none;
+}
+
+/* ===== A. Nube fantasma del logo =====
+   El marcado del logo original no se toca: se monta encima una
+   silueta fantasmal independiente —la misma anatomía de nube del
+   isotipo, con faldón ondulado— que lo cubre mientras dure la
+   temporada. Al retirar la capa el logo vuelve a verse exactamente
+   igual. */
+.halloween-active .nav-logo { position: relative; }
+
+/* Las tres lomas azules que asoman bajo la nube del isotipo se
+   ocultan mientras dura la capa: el fantasma ya tiene su propio
+   faldón ondulado y, si se quedan, parecen un reborde suelto. Solo
+   cambia la opacidad y solo en estas elipses; el trazo azul grande
+   se conserva como respaldo de la silueta, y al retirar la clase el
+   logo vuelve a estar completo. */
+.halloween-active .nav-logo .logo-svg > ellipse { opacity: 0; }
+
+.halloween-ghost {
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  z-index: 2;
+  width: 42px;
+  height: 33px;
+  filter: drop-shadow(0 0 6px var(--halloween-glow));
+  transform-origin: 50% 92%;
+  animation: halloween-float 6.5s ease-in-out infinite;
+}
+
+.halloween-ghost::before {
+  content: '';
+  position: absolute;
+  inset: -9px -7px -5px;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(90, 174, 255, 0.34) 0%, rgba(90, 174, 255, 0) 68%);
+  animation: halloween-ghost-glow 5.5s ease-in-out infinite;
+}
+
+.halloween-ghost svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.halloween-ghost__body {
+  stroke: var(--accent2);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+/* El «¡Buuu!» aparece solo al pasar el cursor (o al enfocar el
+   enlace desde el teclado) y no ocupa espacio: cuelga del logo,
+   dentro del nav, con el registro mono del sitio. */
+.halloween-ghost-bubble {
+  position: absolute;
+  top: calc(100% + 0.3rem);
+  left: 0;
+  z-index: 3;
+  padding: 0.32rem 0.52rem;
+  border: 1px solid var(--accent2);
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px var(--halloween-note-shadow);
+  opacity: 0;
+  transform: translateY(-4px) scale(0.97);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.halloween-active .nav-logo:hover .halloween-ghost-bubble,
+.halloween-active .nav-logo:focus-visible .halloween-ghost-bubble {
+  opacity: 1;
+  transform: none;
+}
+
+.halloween-active .nav-logo:hover .halloween-ghost {
+  animation-play-state: paused;
+}
+
+/* flotación vertical muy suave, sin salirse de su caja */
+@keyframes halloween-float {
+  0%, 100% { transform: translateY(0) rotate(-0.6deg); }
+  50%      { transform: translateY(-2.5px) rotate(0.8deg); }
+}
+
+@keyframes halloween-ghost-glow {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+/* ===== B–E. Capa decorativa del hero =====
+   Un único contenedor a sangre, recortado al hero, por detrás del
+   texto (z-index -1 dentro del contexto aislado del hero, igual que
+   .hero-fx). Al ser `overflow: hidden`, murciélagos y araña no
+   pueden asomar fuera de la sección ni crear scroll. */
+.halloween-hero {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: -1;
+  width: 100vw;
+  transform: translateX(-50%);
+  overflow: hidden;
+}
+
+/* ── Murciélagos ──
+   Tres siluetas SVG diminutas que cruzan el hero de vez en cuando,
+   despacio y en diagonal. Cada ciclo incluye un tramo largo fuera
+   de la escena, así que nunca hay un murciélago permanente sobre el
+   texto. La opacidad base es 0: sin animación (reduced-motion) no
+   existen, y no dejan rastro estático. */
+.halloween-bats { position: absolute; inset: 0; }
+
+.halloween-bat {
+  position: absolute;
+  left: 0;
+  width: 26px;
+  color: var(--halloween-bat);
+  opacity: 0;
+  will-change: transform;
+}
+
+.halloween-bat svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 60%;
+  animation: halloween-flap 0.62s ease-in-out infinite alternate;
+}
+
+.halloween-bat--1 { top: 7%; animation: halloween-bat-a 42s linear infinite; }
+.halloween-bat--2 { top: 36%; width: 20px; animation: halloween-bat-b 56s linear infinite; animation-delay: -7s; }
+.halloween-bat--3 { top: 72%; width: 17px; animation: halloween-bat-c 70s linear infinite; animation-delay: -19s; }
+
+@keyframes halloween-flap {
+  0%   { transform: scaleY(1) rotate(0deg); }
+  100% { transform: scaleY(0.78) rotate(-2deg); }
+}
+
+/* cruce de izquierda a derecha, arriba del titular */
+@keyframes halloween-bat-a {
+  0%        { transform: translate3d(-8vw, 0, 0) rotate(-5deg); opacity: 0; }
+  3%        { opacity: 0.78; }
+  18%       { transform: translate3d(28vw, -2.2vh, 0) rotate(3deg); }
+  30%       { transform: translate3d(64vw, 1.6vh, 0) rotate(-3deg); }
+  38%       { transform: translate3d(88vw, 0.4vh, 0) rotate(4deg); opacity: 0.78; }
+  42%, 100% { transform: translate3d(112vw, 0.4vh, 0) rotate(4deg); opacity: 0; }
+}
+
+/* cruce de derecha a izquierda, por el aire libre del costado */
+@keyframes halloween-bat-b {
+  0%        { transform: translate3d(108vw, 0, 0) rotate(6deg); opacity: 0; }
+  4%        { opacity: 0.62; }
+  20%       { transform: translate3d(66vw, -3vh, 0) rotate(-4deg); }
+  36%       { transform: translate3d(24vw, 1.4vh, 0) rotate(4deg); }
+  42%       { transform: translate3d(2vw, 0, 0) rotate(2deg); opacity: 0.62; }
+  46%, 100% { transform: translate3d(-14vw, 0, 0) rotate(2deg); opacity: 0; }
+}
+
+/* cruce bajo, cerca del riel de metadata, y muy espaciado */
+@keyframes halloween-bat-c {
+  0%        { transform: translate3d(-8vw, 0, 0) rotate(-4deg); opacity: 0; }
+  2%        { opacity: 0.5; }
+  14%       { transform: translate3d(34vw, -1.6vh, 0) rotate(3deg); }
+  24%       { transform: translate3d(72vw, 1vh, 0) rotate(-3deg); opacity: 0.5; }
+  28%, 100% { transform: translate3d(112vw, 1vh, 0) rotate(-3deg); opacity: 0; }
+}
+
+/* ── Calabaza ──
+   Vive en la esquina inferior izquierda, dentro del aire del
+   padding del hero: debajo del riel de metadata, nunca sobre el
+   texto y lejos del WhatsApp (que ocupa la esquina opuesta). La luz
+   cálida es un resplandor estático que respira muy despacio. */
+.halloween-pumpkin {
+  position: absolute;
+  bottom: 4px;
+  left: var(--gutter);
+  width: 34px;
+  color: var(--halloween-pumpkin);
+  filter: drop-shadow(0 0 9px var(--halloween-pumpkin-glow));
+  animation: halloween-pumpkin-glow 5.8s ease-in-out infinite;
+}
+
+.halloween-pumpkin svg { display: block; width: 100%; height: auto; }
+
+@keyframes halloween-pumpkin-glow {
+  0%, 100% { opacity: 0.82; filter: drop-shadow(0 0 7px var(--halloween-pumpkin-glow)); }
+  50%      { opacity: 1; filter: drop-shadow(0 0 13px var(--halloween-pumpkin-glow)); }
+}
+
+/* ── Araña descendiendo ──
+   Solo en pantallas anchas: baja por su hilo en el costado derecho
+   —zona sin texto—, se queda un instante y vuelve a subir. */
+.halloween-spider {
+  position: absolute;
+  top: 30%;
+  right: 9%;
+  width: 14px;
+  color: var(--halloween-bat);
+  animation: halloween-spider-drop 22s ease-in-out infinite;
+}
+
+/* El hilo sube hasta el borde superior del hero (el recorte lo corta
+   allí) y pasa por detrás de la nube de la radio: la araña parece
+   colgar del mismo cielo del hero, no de la nada. */
+.halloween-spider-thread {
+  position: absolute;
+  top: -400px;
+  left: 50%;
+  width: 1px;
+  height: 400px;
+  background: currentColor;
+  opacity: 0.3;
+}
+
+.halloween-spider svg { display: block; width: 100%; height: auto; }
+
+@keyframes halloween-spider-drop {
+  0%, 8%   { transform: translateY(0); }
+  38%      { transform: translateY(92px); }
+  58%      { transform: translateY(92px); }
+  92%, 100% { transform: translateY(0); }
+}
+
+/* ── Destellos ──
+   Tres chispas violetas y azules en el aire libre de la derecha.
+   La opacidad base deja un rastro estático cuando el movimiento
+   está desactivado. */
+.halloween-spark {
+  position: absolute;
+  color: var(--halloween-violet);
+  opacity: 0.62;
+  animation: halloween-twinkle 6.5s ease-in-out infinite;
+}
+
+.halloween-spark svg { display: block; width: 100%; height: auto; }
+
+.halloween-spark--a { top: 24%; right: 13%; width: 13px; animation-delay: -1.2s; }
+.halloween-spark--b { top: 52%; right: 24%; width: 9px; color: var(--accent2); animation-delay: -3.4s; }
+.halloween-spark--c { top: 66%; right: 8%; width: 7px; animation-delay: -5s; }
+
+@keyframes halloween-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50%      { opacity: 0.85; transform: scale(1); }
+}
+
+/* ── Telaraña del hero ──
+   Una esquina tejida en el borde superior derecho del hero, detrás
+   de todo y a muy baja opacidad: se intuye, no se mira. */
+.halloween-web {
+  position: absolute;
+  color: var(--halloween-web);
+  opacity: 0.28;
+}
+
+.halloween-web svg { display: block; width: 100%; height: auto; }
+
+.halloween-web--hero {
+  top: 0;
+  left: 0;
+  width: 88px;
+}
+
+/* ===== C. Radio Acid Flashback =====
+   La nube y el enlace se quedan como están: solo se añaden una
+   telaraña en la esquina de la nube, un punto violeta en la tercera
+   barra del ecualizador, un balanceo algo más juguetón y un aviso
+   ocasional. La URL del reproductor y la lógica de apertura viven en
+   el HTML y en site.js, y aquí no se tocan. */
+
+/* telaraña: colgada de la esquina inferior izquierda de la nube,
+   fuera del texto para no tapar ninguna línea de estado */
+.halloween-radio-web {
+  position: absolute;
+  top: -10px;
+  left: -12px;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  color: var(--halloween-bat);
+  opacity: 0.45;
+}
+
+.halloween-radio-web svg { display: block; width: 100%; height: 100%; }
+
+/* detalle violeta: solo la tercera barra, que ya existe y sigue
+   comunicando el estado por su altura —aquí únicamente cambia el
+   color y gana un brillo mínimo */
+.halloween-active .radio-plate__bar:nth-child(3) {
+  background: var(--halloween-violet);
+  box-shadow: 0 0 4px var(--halloween-violet-soft);
+}
+
+/* balanceo de temporada: un grado más de amplitud y un compás algo
+   más vivo, con una pausa asimétrica para que parezca que la nube se
+   ríe. El empujón del cursor (radio-impulso) se conserva abajo. */
+.halloween-active .radio-hang,
+.halloween-active .radio-hang.is-opening {
+  animation: halloween-radio-swing 9s ease-in-out infinite;
+}
+
+@keyframes halloween-radio-swing {
+  0%, 100% { transform: rotate(1.1deg); }
+  32%      { transform: rotate(-1.5deg); }
+  64%      { transform: rotate(0.7deg); }
+}
+
+/* Se repite el empujón del cursor para que la animación de temporada
+   no lo tape por orden de cascada: al entrar en la nube sigue
+   sintiéndose el golpe de siempre y, al salir, retoma el balanceo. */
+@media (hover: hover) and (pointer: fine) {
+  .halloween-active .radio-hang:has(.radio-plate:hover) {
+    animation: radio-impulso 2.25s ease-in-out 1 forwards;
+  }
+}
+
+/* el aviso: una nota mono que asoma bajo la nube unos segundos y se
+   va. Decorativa (aria-hidden), no toca el estado del reproductor y
+   no se muestra en pantallas estrechas para no sumar ruido. */
+.halloween-radio-note {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  z-index: 2;
+  padding: 0.3rem 0.48rem;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  box-shadow: 0 8px 18px var(--halloween-note-shadow);
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+}
+
+.halloween-radio-note--visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== Responsive =====
+   En móvil se reduce la cantidad de piezas: dos murciélagos, una
+   chispa, sin araña ni telarañas del hero, y el aviso de la radio se
+   queda fuera. Nada decorativo ocupa el centro del texto ni el
+   carril del WhatsApp. */
+@media (max-width: 900px) {
+  .halloween-spider,
+  .halloween-web--hero,
+  .halloween-spark--c,
+  .halloween-radio-note { display: none; }
+}
+
+@media (max-width: 620px) {
+  .halloween-ghost {
+    top: 1px;
+    left: 3px;
+    width: 31px;
+    height: 22px;
+  }
+
+  /* el globo solo tiene sentido con cursor: en táctil se retira */
+  .halloween-ghost-bubble { display: none; }
+
+  .halloween-bat--1 { width: 19px; }
+  .halloween-bat--2 { display: none; }
+  .halloween-bat--3 { width: 15px; top: 68%; }
+
+  .halloween-spark--a { width: 10px; right: 9%; }
+  .halloween-spark--b { width: 7px; right: 20%; }
+
+  .halloween-pumpkin { width: 30px; bottom: 3px; }
+
+  .halloween-radio-web {
+    top: -6px;
+    left: -12px;
+    width: 17px;
+    height: 17px;
+    opacity: 0.45;
+  }
+}
+
+/* En pantallas muy estrechas la telaraña del hero desaparece: la
+   esquina queda para el logo y el titular. */
+@media (max-width: 380px) {
+  .halloween-web--hero { display: none; }
+}
+
+/* ===== Movimiento reducido =====
+   base.css ya apaga todas las animaciones y transiciones. Aquí se
+   retiran además las piezas que solo tienen sentido en movimiento
+   (murciélagos y araña) y se dejan únicamente las estáticas: la
+   nube fantasma, la calabaza con su luz fija, los destellos, la
+   telaraña y el detalle violeta del ecualizador. El aviso ocasional
+   de la radio no se programa (lo decide el JS). */
+@media (prefers-reduced-motion: reduce) {
+  .halloween-bats,
+  .halloween-spider { display: none; }
+
+  .halloween-pumpkin,
+  .halloween-spark { filter: none; }
+}
